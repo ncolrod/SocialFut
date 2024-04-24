@@ -5,11 +5,11 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Texto en negrita "Let's Register Your Account" -->
+    <!-- Texto -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Let's Register Your Account"
+        android:text="Let's Register Your Team"
         android:textStyle="bold"
         android:textSize="35sp"
         android:textColor="@color/black"
@@ -18,69 +18,86 @@
         android:layout_marginTop="50dp"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Eslogan "Legends begin playing in the mud." -->
+    <!-- Eslogan -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Legends begin playing
-            in the mud."
+        android:text="Welcome captain, let´s go!"
+        android:layout_marginRight="25dp"
         android:textSize="28sp"
         android:textColor="@color/black"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="32dp"/>
 
-    <!-- Campo de entrada para el nombre -->
+    <!-- Campo de entrada para el nombre del equipo -->
     <EditText
-        android:id="@+id/editTextName"
+        android:id="@+id/editTextTeamName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"
+        android:hint="Team Name"
         android:inputType="text"/>
 
-    <!-- Campo de entrada para el apellido -->
+    <!-- Campo de entrada para la localizacion -->
     <EditText
-        android:id="@+id/editTextLastName"
+        android:id="@+id/editTextLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Last Name"
+        android:hint="Location"
         android:inputType="text"/>
 
-    <!-- Campo de entrada para el correo electrónico -->
+    <!-- Campo de entrada para el estadio -->
     <EditText
-        android:id="@+id/editTextEmailRegister"
+        android:id="@+id/editTextStadium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"/>
+        android:hint="Stadium"
+        android:inputType="text"/>
 
-    <!-- Campo de entrada para la contraseña -->
+    <!-- Campo de entrada para lel color del equipo -->
     <EditText
-        android:id="@+id/editTextPasswordRegister"
+        android:id="@+id/editTextColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"/>
+        android:hint="Color"
+        android:inputType="text"/>
 
-    <!-- Botón para registrarse -->
+    <!-- Campo de entrada para la descripcion -->
+    <EditText
+        android:id="@+id/editTextDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Description"
+        android:inputType="text"/>
+
+    <!-- Campo de entrada para el codigo de union -->
+    <EditText
+        android:id="@+id/editTextJoinCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Join Code"
+        android:inputType="text"/>
+
+    <!-- Botón para crear equipo -->
     <Button
         android:id="@+id/buttonSignUpRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="Create the new dream team"
         android:textSize="20dp"
         android:textColor="#F9F9F9"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/btnstyle"/>
 
-    <!-- Texto que actúa como enlace para iniciar sesión -->
+    <!-- Texto que actúa como enlace para unirte a un equipo -->
     <Button
         android:id="@+id/btnLogin"
         android:background="@color/white"
         android:textSize="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Already have an account? Login"
-        android:textColor="@android:color/holo_blue_dark"
+        android:text="Join to a team"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="12dp"/>
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,6 +28,7 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText editTextName, editTextLastName, editTextEmail, editTextPassword;
+    private Button btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextLastName = findViewById(R.id.editTextLastName);
         editTextEmail = findViewById(R.id.editTextEmailRegister);
         editTextPassword = findViewById(R.id.editTextPasswordRegister);
+        btnLogin = findViewById(R.id.btnLogin);
 
         //Creamos y vinculamos el boton de sing up
         Button btnSingUp = findViewById(R.id.buttonSignUpRegister);
@@ -58,6 +61,11 @@ public class RegisterActivity extends AppCompatActivity {
                 //Mostramos un mensaje de error en caso de que los campos esten vacios
                 Toast.makeText(this, "Error: Debes de rellenar los campos", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        btnLogin.setOnClickListener(v -> {
+            Intent intent =  new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
         });
 
     }

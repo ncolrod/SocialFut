@@ -10,7 +10,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class BackendComunication {
 
-    private final String baseUrl="http://192.168.1.130:8080/";
+    private final String baseUrl="http://192.168.1.134:8080/";
     private final ObjectMapper objectMapper= new ObjectMapper(); //transformar JSON
     private static RetrofitRepository retrofitService;
 

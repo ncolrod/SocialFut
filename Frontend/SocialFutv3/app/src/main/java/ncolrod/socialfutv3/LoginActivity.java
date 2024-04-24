@@ -23,6 +23,8 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText editTextEmail, editTextPassword;
+    private Button btnRegister;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //Creamos y vinculamos los botones de login y sing up
         Button btnLogin = findViewById(R.id.buttonLogin);
+        btnRegister = findViewById(R.id.buttonRegister);
+        btnRegister.setOnClickListener(this);
 
         //Listener del boton de Iniciar Sesion
         btnLogin.setOnClickListener(v -> {
@@ -51,17 +55,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
+        btnRegister.setOnClickListener(v -> {
+            Intent intent =  new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
     }
+
 
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.buttonRegister){
-            Intent intent =  new Intent(getApplicationContext(), RegisterActivity.class);
+        if (v.getId() == btnRegister.getId()){
+            Intent intent =  new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
+            finish();
         }
 
     }
+
+
 
     public class VerifyUserTask extends AsyncTask<Void, Void, AuthenticationRespose> {
 
