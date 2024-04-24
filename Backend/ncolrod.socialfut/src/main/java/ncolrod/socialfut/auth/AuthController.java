@@ -2,7 +2,6 @@ package ncolrod.socialfut.auth;
 
 import lombok.RequiredArgsConstructor;
 import ncolrod.socialfut.services.AuthenticationService;
-import org.slf4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationService service;
-
 
     @PostMapping(value = "register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
