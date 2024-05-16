@@ -5,17 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AuthenticationRespose {
+@Setter
+public class TeamJoinResponse {
 
-    private String token;
+    private boolean succesfull;
 
-    public String getToken() {
-        return token;
-    }
 }

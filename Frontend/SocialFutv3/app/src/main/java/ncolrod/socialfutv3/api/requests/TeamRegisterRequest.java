@@ -1,4 +1,4 @@
-package ncolrod.socialfutv3.api;
+package ncolrod.socialfutv3.api.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

@@ -1,16 +1,28 @@
-package ncolrod.socialfutv3.api;
+package ncolrod.socialfutv3.api.retrofit;
 
-import ncolrod.socialfutv3.api.models.UserModel;
+import java.util.List;
+
+import ncolrod.socialfutv3.api.models.Team;
+import ncolrod.socialfutv3.api.models.User;
+import ncolrod.socialfutv3.api.requests.AuthenticationRequest;
+import ncolrod.socialfutv3.api.requests.RegisterRequest;
+import ncolrod.socialfutv3.api.requests.TeamJoinRequest;
+import ncolrod.socialfutv3.api.requests.TeamRegisterRequest;
+import ncolrod.socialfutv3.api.responses.AuthenticationRespose;
+import ncolrod.socialfutv3.api.responses.TeamJoinResponse;
+import ncolrod.socialfutv3.api.responses.TeamRegisterResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Query;
 
 public interface RetrofitRepository {
 
     /*
-    USUARIO -> Metodos para buscar y registrar usuarios. Uso en el login y register.
+    USUARIO -> Metodos para loguear y registrar usuarios.
      */
 
     @POST("auth/login")
@@ -20,6 +32,14 @@ public interface RetrofitRepository {
     @POST("auth/register")
     @Headers("Content-Type: application/json")
     Call<AuthenticationRespose> register(@Body RegisterRequest request);
+
+    //Peticion que devuelve un objeto User
+    @GET("users/getuser")
+    Call<User> getUser ();
+
+    // Peticion que actualiza la poscion del Usuario
+    @PUT("user/position")
+    Call<User> updatePosition(@Query("position") String position);
 
 
     /*
@@ -33,9 +53,15 @@ public interface RetrofitRepository {
     @Headers("Content-Type: application/json")
     Call<TeamRegisterResponse> teamRegister(@Body TeamRegisterRequest request);
 
+    //Peticion que devuelve un objeto Team
+    @GET("teams/getteam")
+    Call<Team> getTeam();
 
-    @GET("users/getuser")
-    Call<UserModel> getUser ();
+    @GET("teams/players")
+    Call<List<User>> getPlayers();
+
+
+
 
 
 

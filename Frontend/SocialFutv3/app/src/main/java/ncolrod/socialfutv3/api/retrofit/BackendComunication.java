@@ -1,4 +1,4 @@
-package ncolrod.socialfutv3.api;
+package ncolrod.socialfutv3.api.retrofit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

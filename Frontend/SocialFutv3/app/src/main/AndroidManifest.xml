@@ -27,7 +27,7 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".SuccesfullActivity"
+            android:name=".api.fragments.SuccesfullActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"

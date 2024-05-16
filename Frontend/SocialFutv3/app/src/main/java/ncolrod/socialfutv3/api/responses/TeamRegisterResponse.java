@@ -1,4 +1,4 @@
-package ncolrod.socialfutv3.api;
+package ncolrod.socialfutv3.api.responses;
 
 import lombok.*;
 

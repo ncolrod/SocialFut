@@ -14,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 
-import ncolrod.socialfutv3.api.AuthenticationRequest;
-import ncolrod.socialfutv3.api.AuthenticationRespose;
-import ncolrod.socialfutv3.api.BackendComunication;
+import ncolrod.socialfutv3.api.fragments.SuccesfullActivity;
+import ncolrod.socialfutv3.api.requests.AuthenticationRequest;
+import ncolrod.socialfutv3.api.responses.AuthenticationRespose;
+import ncolrod.socialfutv3.api.retrofit.BackendComunication;
+import ncolrod.socialfutv3.api.retrofit.TokenHolder;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -120,7 +122,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (authenticationRespose != null){
                 //Creamos un bundle con la informacion del usuario
                 Bundle infoBundle = new Bundle();
+
                 infoBundle.putString("userToken", authenticationRespose.getToken()); //Guardamos el token del user en el bundle
+
+                TokenHolder.getInstance().setToken(authenticationRespose.getToken());
 
                 //Iniciamos la app
                 Intent intent =  new Intent(getApplicationContext(), SuccesfullActivity.class);
@@ -133,4 +138,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package ncolrod.socialfutv3.api;
+package ncolrod.socialfutv3.api.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

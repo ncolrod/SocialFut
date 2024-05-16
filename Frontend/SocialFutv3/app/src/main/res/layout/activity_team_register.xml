@@ -53,22 +53,6 @@
         android:hint="Stadium"
         android:inputType="text"/>
 
-    <!-- Campo de entrada para lel color del equipo -->
-    <EditText
-        android:id="@+id/editTextColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Color"
-        android:inputType="text"/>
-
-    <!-- Campo de entrada para la descripcion -->
-    <EditText
-        android:id="@+id/editTextDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Description"
-        android:inputType="text"/>
-
     <!-- Campo de entrada para el codigo de union -->
     <EditText
         android:id="@+id/editTextJoinCode"
@@ -79,7 +63,7 @@
 
     <!-- Botón para crear equipo -->
     <Button
-        android:id="@+id/buttonSignUpRegister"
+        android:id="@+id/btnCreateTeamRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create the new dream team"
@@ -90,7 +74,7 @@
 
     <!-- Texto que actúa como enlace para unirte a un equipo -->
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnJoinToATeam"
         android:background="@color/white"
         android:textSize="15dp"
         android:layout_width="wrap_content"

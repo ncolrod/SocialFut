@@ -19,28 +19,15 @@
         android:id="@+id/textViewJoin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="190dp"
+        android:layout_marginTop="32dp"
         android:text="Join to a team"
         android:textSize="24sp"
         android:textColor="@color/black"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTeamName"
+        app:layout_constraintBottom_toTopOf="@+id/editTextSafeCode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
-
-    <EditText
-        android:id="@+id/editTextTeamName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:hint="Team name"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewJoin" />
 
     <EditText
         android:id="@+id/editTextSafeCode"
@@ -53,16 +40,16 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTeamName" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewJoin" />
 
     <Button
         android:id="@+id/buttonJoin"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="JOIN"
         android:textStyle="bold"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textColor="@color/white"
         android:background="@drawable/btnstyle"
         app:layout_constraintEnd_toEndOf="@+id/editTextSafeCode"
@@ -71,12 +58,12 @@
 
     <Button
         android:id="@+id/buttonCreateTeam"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="CREATE A TEAM"
         android:textStyle="bold"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textColor="@color/white"
         android:background="@drawable/btnstyle"
         app:layout_constraintEnd_toEndOf="@+id/editTextSafeCode"

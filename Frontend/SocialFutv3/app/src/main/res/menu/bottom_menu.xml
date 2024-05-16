@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/matches"
+        android:title="Match"
+        android:icon="@drawable/matches"
+        android:iconTint="@color/black"
+        />
+
+    <item
+        android:id="@+id/messages"
+        android:title="Messages"
+        android:icon="@drawable/messages"
+        android:iconTint="@color/black"
+
+        />
+
+
+    <item
+        android:id="@+id/create"
+        android:title=""
+        android:enabled="false"
+        android:iconTint="@color/white"
+        />
+
+    <item
+        android:id="@+id/teamprofile"
+        android:title="Team"
+        android:icon="@drawable/teamprofile"
+        android:iconTint="@color/black"
+        />
+
+    <item
+        android:id="@+id/userprofile"
+        android:title="User"
+        android:icon="@drawable/userprofile"
+        android:iconTint="@color/black"
+        />
+</menu>
