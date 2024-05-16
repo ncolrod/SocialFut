@@ -18,6 +18,7 @@ public class BackendComunication {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .readTimeout(1, TimeUnit.MINUTES)
                 .connectTimeout(1, TimeUnit.MINUTES)
+                .addInterceptor(new TokenInterceptor())
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()

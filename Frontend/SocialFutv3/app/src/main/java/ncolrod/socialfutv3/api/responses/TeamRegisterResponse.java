@@ -9,9 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class TeamRegisterResponde {
+public class TeamRegisterResponse {
 
-    private String msg;
-    //private Team team;
+    private boolean succesfull;
 
 }

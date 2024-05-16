@@ -5,12 +5,13 @@ import ncolrod.socialfut.entities.Team;
 import ncolrod.socialfut.entities.User;
 import ncolrod.socialfut.repositories.TeamRepository;
 import ncolrod.socialfut.repositories.UserRepository;
+import ncolrod.socialfut.requests.TeamJoinRequest;
 import ncolrod.socialfut.requests.TeamRegisterRequest;
-import ncolrod.socialfut.responses.TeamRegisterResponde;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import ncolrod.socialfut.responses.TeamJoinResponse;
+import ncolrod.socialfut.responses.TeamRegisterResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,8 +31,38 @@ public class TeamService {
         return teamRepository.findByName(name);
     }
 
+    public TeamJoinResponse join(TeamJoinRequest request, User user) {
+        try {
+            String join_code = request.getSafeCode().toString();
 
-    public TeamRegisterResponde register(TeamRegisterRequest request, User user) {
+            // Verificar si existe un equipo con el nombre y el código seguro proporcionados
+            Team optionalTeam = teamRepository.findByJoinCode(join_code);
+
+
+            if (optionalTeam !=null) {
+                // Obtener el equipo con el nombre proporcionado
+                Team team = optionalTeam;
+                // Asignar el equipo al usuario
+                user.setTeam(team);
+                // Guardar el usuario actualizado en la base de datos
+                userRepository.save(user);
+
+                // Crear una respuesta exitosa
+                return new TeamJoinResponse(true);
+            } else {
+                // Crear una respuesta fallida
+                return new TeamJoinResponse(false);
+            }
+
+        } catch (Exception e) {
+            // Manejar la excepción y devolver una respuesta fallida
+            e.printStackTrace();
+            return new TeamJoinResponse(false);
+        }
+    }
+
+
+    public TeamRegisterResponse register(TeamRegisterRequest request, User user) {
         try {
             // Crea un nuevo equipo con los datos proporcionados en la solicitud
             Team newTeam = new Team();
@@ -39,22 +70,33 @@ public class TeamService {
             newTeam.setLocation(request.getLocation());
             newTeam.setStadium(request.getStadium());
             newTeam.setJoin_code(request.getJoin_code());
-            newTeam.setTeam_color(request.getTeam_color());
+
+            // Guarda el nuevo equipo en la base de datos
+            teamRepository.save(newTeam);
 
             // Asigna automáticamente el rol de administrador al usuario que crea el equipo
             user.setRole(Role.ADMIN);
+            user.setTeam(newTeam);
             userRepository.save(user);
 
-            // Guarda el nuevo equipo en la base de datos
-            Team savedTeam = teamRepository.save(newTeam);
+
 
             // Devuelve una respuesta de éxito junto con cualquier información adicional
-            return new TeamRegisterResponde("Team registered successfully", savedTeam);
+            return new TeamRegisterResponse(true);
         } catch (Exception e) {
             e.printStackTrace();
             // Maneja cualquier excepción que pueda ocurrir durante el proceso de registro del equipo
-            return new TeamRegisterResponde();
+            return new TeamRegisterResponse(false);
         }
     }
+
+    public Optional<Team> getTeamById(Integer id) {
+        return  teamRepository.findById(id);
+    }
+    public List<User> getTeamPlayers(int teamId) {
+        return teamRepository.findPlayersByTeamId(teamId);
+    }
+
+
 }
 

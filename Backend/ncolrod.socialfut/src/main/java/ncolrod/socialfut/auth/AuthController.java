@@ -1,6 +1,7 @@
 package ncolrod.socialfut.auth;
 
 import lombok.RequiredArgsConstructor;
+import ncolrod.socialfut.requests.RegisterRequest;
 import ncolrod.socialfut.services.AuthenticationService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class AuthController {
 
     @PostMapping(value = "register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<AuthenticationRespose> register(
+    public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
     ){
         try{
@@ -29,7 +30,7 @@ public class AuthController {
 
     @PostMapping(value = "login", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<AuthenticationRespose> login(
+    public ResponseEntity<AuthenticationResponse> login(
             @RequestBody AuthenticationRequest request
     ){
         try{
@@ -38,6 +39,8 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+
 
 
 

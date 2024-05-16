@@ -1,4 +1,4 @@
-package ncolrod.socialfut.auth;
+package ncolrod.socialfut.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRespose {
+@AllArgsConstructor
+public class TeamJoinRequest {
 
-    private String token;
+    private String safeCode;
 }

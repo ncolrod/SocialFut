@@ -1,13 +1,13 @@
-package ncolrod.socialfut.auth;
+package ncolrod.socialfutv3.api.retrofit;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.beans.ConstructorProperties;
 
 @Data
 @Builder
@@ -23,8 +23,8 @@ public class RegisterRequest {
     @JsonProperty
     private String password;
 
-    @ConstructorProperties({"firstname", "lastname", "email", "password"})
-    public RegisterRequest(String firstname, String lastname, String email, String password) {
+    @JsonCreator
+    public RegisterRequest( @JsonProperty String firstname,@JsonProperty String lastname,@JsonProperty String email,@JsonProperty String password) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;

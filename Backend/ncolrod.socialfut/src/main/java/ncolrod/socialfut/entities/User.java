@@ -1,5 +1,8 @@
 package ncolrod.socialfut.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,8 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Data
+
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -22,6 +27,9 @@ public class User implements UserDetails {
     private int id;
     private String firstname;
     private String lastname;
+    private String location;
+    private String telephone;
+    private String position;
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -29,6 +37,7 @@ public class User implements UserDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
+    @JsonIgnore
     private Team team;
 
     @Override
