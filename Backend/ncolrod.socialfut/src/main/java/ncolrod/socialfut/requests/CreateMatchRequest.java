@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 import ncolrod.socialfut.entities.Team;
 import ncolrod.socialfut.entities.User;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Data
 @Builder
 @NoArgsConstructor
 public class CreateMatchRequest {
-
     @JsonProperty
     private Team homeTeam;
     @JsonProperty
@@ -21,11 +20,11 @@ public class CreateMatchRequest {
     @JsonProperty
     private User creatorUser;
     @JsonProperty
-    private Date date;
+    private Timestamp date;
     @JsonProperty
     private double pricePerPerson;
 
-    public CreateMatchRequest(Team homeTeam, String location, User creatorUser, Date date, double pricePerPerson) {
+    public CreateMatchRequest(Team homeTeam, String location, User creatorUser, Timestamp date, double pricePerPerson) {
         this.homeTeam = homeTeam;
         this.location = location;
         this.creatorUser = creatorUser;

@@ -1,10 +1,12 @@
 package ncolrod.socialfut.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
+
+import java.sql.Time;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -19,19 +21,18 @@ public class FootballMatch {
     @Column(name = "match_id")
     private int id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "home_team_id")
     private Team homeTeam;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "away_team_id")
-    @JsonIgnore
     private Team awayTeam;
 
     private String location;
     private String result;
     private String summary;
-    private Date date;
+    private Timestamp date;
     private Double pricePerPerson;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -39,7 +40,7 @@ public class FootballMatch {
     private User creatorUser;
 
     //Contructor para createMatch
-    public FootballMatch(Team homeTeam, String location, User creatorUser, Date date, double pricePerPerson) {
+    public FootballMatch(Team homeTeam, String location, User creatorUser, Timestamp date, double pricePerPerson) {
         this.homeTeam = homeTeam;
         this.location = location;
         this.creatorUser = creatorUser;
@@ -48,7 +49,7 @@ public class FootballMatch {
     }
 
     //Contructor para joinMatch
-    public FootballMatch(Team homeTeam, Team awayTeam, String location, Date date, Double pricePerPerson, User creatorUser) {
+    public FootballMatch(Team homeTeam, Team awayTeam, String location, Timestamp date, Double pricePerPerson, User creatorUser) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.location = location;
