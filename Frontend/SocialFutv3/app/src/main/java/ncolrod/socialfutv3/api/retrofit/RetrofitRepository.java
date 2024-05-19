@@ -5,10 +5,12 @@ import java.util.List;
 import ncolrod.socialfutv3.api.models.Team;
 import ncolrod.socialfutv3.api.models.User;
 import ncolrod.socialfutv3.api.requests.AuthenticationRequest;
+import ncolrod.socialfutv3.api.requests.CreateMatchRequest;
 import ncolrod.socialfutv3.api.requests.RegisterRequest;
 import ncolrod.socialfutv3.api.requests.TeamJoinRequest;
 import ncolrod.socialfutv3.api.requests.TeamRegisterRequest;
 import ncolrod.socialfutv3.api.responses.AuthenticationRespose;
+import ncolrod.socialfutv3.api.responses.CreateMatchResponse;
 import ncolrod.socialfutv3.api.responses.TeamJoinResponse;
 import ncolrod.socialfutv3.api.responses.TeamRegisterResponse;
 import retrofit2.Call;
@@ -59,6 +61,15 @@ public interface RetrofitRepository {
 
     @GET("teams/players")
     Call<List<User>> getPlayers();
+
+    /*
+    MATCH -> Métodos para crear, unirse y finalizar partidos
+     */
+
+    @POST("matches/create")
+    @Headers("Content-Type: application/json")
+    Call<CreateMatchResponse> createMatch(@Body CreateMatchRequest request);
+
 
 
 
