@@ -9,6 +9,7 @@ import ncolrod.socialfut.requests.CreateMatchRequest;
 import ncolrod.socialfut.requests.JoinMatchRequest;
 import ncolrod.socialfut.responses.CreateMatchResponse;
 import ncolrod.socialfut.responses.JoinMatchResponse;
+import org.hibernate.Hibernate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,8 @@ public class FootballMatchService {
         try {
             if (user != null && user.getRole() != Role.USER) {
                 FootballMatch footballMatch = footballMatchRepository.findById(request.getMatchId()).orElseThrow();
+                Hibernate.initialize(footballMatch.getHomeTeam().getUsers()); // Initialize the collection
+                Hibernate.initialize(footballMatch.getAwayTeam().getUsers());
 
                 if (footballMatch != null) {
                     footballMatch.setAwayTeam(awayTeam);

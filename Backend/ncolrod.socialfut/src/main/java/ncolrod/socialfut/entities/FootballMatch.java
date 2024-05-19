@@ -19,12 +19,13 @@ public class FootballMatch {
     @Column(name = "match_id")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "home_team_id")
     private Team homeTeam;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "away_team_id")
+    @JsonIgnore
     private Team awayTeam;
 
     private String location;
@@ -33,9 +34,8 @@ public class FootballMatch {
     private Date date;
     private Double pricePerPerson;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator_user_id")
-    @JsonIgnore
     private User creatorUser;
 
     //Contructor para createMatch

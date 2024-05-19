@@ -23,6 +23,7 @@ public class Team {
     private String name;
     private String location;
     private String stadium;
+    @JsonIgnore
     private String join_code;
     private String team_color;
     private String description;
