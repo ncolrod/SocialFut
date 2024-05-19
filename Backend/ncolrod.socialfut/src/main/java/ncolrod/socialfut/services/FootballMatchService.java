@@ -35,9 +35,9 @@ public class FootballMatchService {
                 Team homeTeam = request.getHomeTeam();
 
                 // Ensure the home team is persisted before creating the match
-                if (homeTeam.equals(null)) {
-                    teamRepository.save(homeTeam);
-                }
+                //if (homeTeam.equals(null)) {
+                //    teamRepository.save(homeTeam);
+                //}
 
                 FootballMatch footballMatch = new FootballMatch(
                         homeTeam,

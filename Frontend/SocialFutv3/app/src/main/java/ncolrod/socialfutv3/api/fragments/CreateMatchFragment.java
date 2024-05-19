@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -23,6 +24,7 @@ import ncolrod.socialfutv3.api.models.User;
 import ncolrod.socialfutv3.api.requests.CreateMatchRequest;
 import ncolrod.socialfutv3.api.responses.CreateMatchResponse;
 import ncolrod.socialfutv3.api.retrofit.BackendComunication;
+import ncolrod.socialfutv3.api.tasks.LoadUserDataTask;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,6 +36,7 @@ public class CreateMatchFragment extends Fragment {
     private TimePicker timePicker;
     private EditText priceEditText;
     private Button createMatchButton;
+    private SharedViewModel sharedViewModel;
 
     @Nullable
     @Override
@@ -45,6 +48,11 @@ public class CreateMatchFragment extends Fragment {
         timePicker = view.findViewById(R.id.timePicker);
         priceEditText = view.findViewById(R.id.priceEditText);
         createMatchButton = view.findViewById(R.id.createMatchButton);
+
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        // Cargar los datos del usuario
+        new LoadUserDataTask(sharedViewModel, BackendComunication.getRetrofitRepository()).execute();
 
         createMatchButton.setOnClickListener(v -> createMatch());
 
@@ -70,8 +78,13 @@ public class CreateMatchFragment extends Fragment {
         calendar.set(year, month, day, hour, minute, 0);
         Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
-        Team homeTeam = getUserTeam();
-        User creatorUser = getCreatorUser();
+        Team homeTeam = sharedViewModel.getTeamLiveData().getValue();
+        User creatorUser = sharedViewModel.getUserLiveData().getValue();
+
+        if (homeTeam == null || creatorUser == null) {
+            Toast.makeText(getContext(), "Error: User or team not loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         CreateMatchRequest createMatchRequest = new CreateMatchRequest(homeTeam, location, creatorUser, timestamp, price);
         Call<CreateMatchResponse> call = BackendComunication.getRetrofitRepository().createMatch(createMatchRequest);
@@ -92,13 +105,5 @@ public class CreateMatchFragment extends Fragment {
                 Toast.makeText(getContext(), "Error creating match", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private Team getUserTeam() {
-        return new Team(); // Example placeholder
-    }
-
-    private User getCreatorUser() {
-        return new User(); // Example placeholder
     }
 }
