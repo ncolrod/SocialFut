@@ -19,7 +19,7 @@ import ncolrod.socialfutv3.api.models.User;
  * Los datos que se comparten son:
  * - Usuario
  * - Partidos
- * - Estadisticas del usuario
+ * - Estadísticas del usuario
  */
 
 @Getter

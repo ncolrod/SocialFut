@@ -82,7 +82,7 @@ public class TeamRegisterActivity extends AppCompatActivity {
         @Override
         protected TeamRegisterResponse doInBackground(Void... voids) {
             //Inicializar el BackendComunication que se usuara para registrar y verificar el usuario
-            Call<TeamRegisterResponse> registerTeamCall = BackendComunication.getRetrofitRepository().teamRegister(new TeamRegisterRequest(teamName, teamLocation,teamLocation, teamJoinCode));
+            Call<TeamRegisterResponse> registerTeamCall = BackendComunication.getRetrofitRepository().teamRegister(new TeamRegisterRequest(teamName, teamLocation,teamStadium, teamJoinCode));
             try {
                 //Cuardamos la respuesta a nuestra peticion
                 Response<TeamRegisterResponse> registerTeamResponse= registerTeamCall.execute();

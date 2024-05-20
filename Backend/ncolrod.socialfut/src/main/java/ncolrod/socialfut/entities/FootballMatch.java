@@ -32,6 +32,7 @@ public class FootballMatch {
     private String location;
     private String result;
     private String summary;
+
     private Timestamp date;
     private Double pricePerPerson;
 

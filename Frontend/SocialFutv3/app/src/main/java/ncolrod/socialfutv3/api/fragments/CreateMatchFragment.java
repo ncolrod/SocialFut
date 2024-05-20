@@ -66,7 +66,7 @@ public class CreateMatchFragment extends Fragment {
         int year = datePicker.getYear();
         int hour = timePicker.getCurrentHour();
         int minute = timePicker.getCurrentMinute();
-        double price;
+        double price = Double.parseDouble(priceEditText.getText().toString());
 
         try {
             price = Double.parseDouble(priceEditText.getText().toString());

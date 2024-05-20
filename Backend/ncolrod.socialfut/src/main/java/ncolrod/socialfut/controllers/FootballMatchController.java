@@ -1,5 +1,6 @@
 package ncolrod.socialfut.controllers;
 
+import ncolrod.socialfut.entities.FootballMatch;
 import ncolrod.socialfut.requests.CreateMatchRequest;
 import ncolrod.socialfut.requests.JoinMatchRequest;
 import ncolrod.socialfut.responses.CreateMatchResponse;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/matches")
@@ -41,6 +44,17 @@ public class FootballMatchController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<FootballMatch>> getAllMatches() throws Exception {
+        List<FootballMatch> matches = footballMatchService.findAllMatches();
+        if (matches!=null){
+            return ResponseEntity.ok(matches);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }
 
 

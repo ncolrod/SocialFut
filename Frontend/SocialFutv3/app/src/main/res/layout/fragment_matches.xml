@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".api.fragments.MatchesFragment"
-    android:background="@color/black">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#4498FF">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/matchesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Matches"
-        android:gravity="center"
-        android:textSize="30dp"
-        android:textColor="@color/white"/>
-
-</FrameLayout>
+        android:scrollbars="vertical"/>
+</LinearLayout>
