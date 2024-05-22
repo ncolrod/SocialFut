@@ -23,7 +23,6 @@ import ncolrod.socialfutv3.api.models.User;
  */
 
 @Getter
-@Setter
 public class SharedViewModel extends ViewModel {
 
     private MutableLiveData<User> user; // Usuario actual
@@ -31,6 +30,7 @@ public class SharedViewModel extends ViewModel {
     private MutableLiveData<List<Match>> matches; // Partidos del equipo
     private MutableLiveData<List<Goal>> userStatistics; // Estadísticas del usuario
     private MutableLiveData<List<User>> players; // Jugadores del equipo
+    private MutableLiveData<Match> joinedMatch; // Partido al que se ha unido el usuario
 
     public SharedViewModel() {
         user = new MutableLiveData<>();
@@ -38,6 +38,7 @@ public class SharedViewModel extends ViewModel {
         matches = new MutableLiveData<>();
         userStatistics = new MutableLiveData<>();
         players = new MutableLiveData<>();
+        joinedMatch = new MutableLiveData<>(); // Inicializa la variable
     }
 
     public void setUser(User user) {
@@ -60,6 +61,10 @@ public class SharedViewModel extends ViewModel {
         this.players.setValue(players);
     }
 
+    public void setJoinedMatch(Match match) {
+        this.joinedMatch.setValue(match);
+    }
+
     public LiveData<User> getUserLiveData() {
         return user;
     }
@@ -80,6 +85,10 @@ public class SharedViewModel extends ViewModel {
         return players;
     }
 
+    public LiveData<Match> getJoinedMatchLiveData() {
+        return joinedMatch;
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();
@@ -90,5 +99,6 @@ public class SharedViewModel extends ViewModel {
         matches = null;
         userStatistics = null;
         players = null;
+        joinedMatch = null;
     }
 }
