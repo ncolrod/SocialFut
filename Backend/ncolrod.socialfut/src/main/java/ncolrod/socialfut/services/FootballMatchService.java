@@ -1,5 +1,6 @@
 package ncolrod.socialfut.services;
 
+import jakarta.persistence.UniqueConstraint;
 import ncolrod.socialfut.entities.FootballMatch;
 import ncolrod.socialfut.entities.Role;
 import ncolrod.socialfut.entities.Team;
@@ -99,6 +100,21 @@ public class FootballMatchService {
         try {
             // Intenta recuperar todos los partidos de fútbol
             return footballMatchRepository.findAll();
+        } catch (DataAccessException e) {
+            // Si hay un problema al acceder a los datos, lanza una excepción
+            throw new Exception("Error al acceder a los datos de los partidos", e);
+        } catch (Exception e) {
+            // Captura cualquier otra excepción no esperada y lanza una excepción general
+            throw new Exception("Error desconocido al recuperar los partidos de fútbol", e);
+        }
+    }
+
+    public List<FootballMatch> listJoinMatches(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+        User user = (User) userDetails;
+        int teamJoinId = user.getTeam().getId();
+        try {
+            // Intenta recuperar todos los partidos de fútbol menos los suyos propios
+            return footballMatchRepository.listMatchToJoin(teamJoinId);
         } catch (DataAccessException e) {
             // Si hay un problema al acceder a los datos, lanza una excepción
             throw new Exception("Error al acceder a los datos de los partidos", e);

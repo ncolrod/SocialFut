@@ -17,6 +17,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".api.fragments.MatchActivity"
+            android:exported="false" />
+        <activity
             android:name=".TeamLoginActivity"
             android:exported="false"
             android:theme="@style/Theme.SocialFutv3" />

@@ -1,6 +1,7 @@
 package ncolrod.socialfut.controllers;
 
 import ncolrod.socialfut.entities.FootballMatch;
+import ncolrod.socialfut.entities.User;
 import ncolrod.socialfut.requests.CreateMatchRequest;
 import ncolrod.socialfut.requests.JoinMatchRequest;
 import ncolrod.socialfut.responses.CreateMatchResponse;
@@ -48,6 +49,16 @@ public class FootballMatchController {
     @GetMapping("/list")
     public ResponseEntity<List<FootballMatch>> getAllMatches() throws Exception {
         List<FootballMatch> matches = footballMatchService.findAllMatches();
+        if (matches!=null){
+            return ResponseEntity.ok(matches);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/listJoin")
+    public ResponseEntity<List<FootballMatch>> getJoinMatches(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+        List<FootballMatch> matches = footballMatchService.listJoinMatches(userDetails);
         if (matches!=null){
             return ResponseEntity.ok(matches);
         } else {

@@ -80,6 +80,8 @@ public interface RetrofitRepository {
     @GET("matches/list")
     Call<List<Match>> getMatches();
 
+    @GET("matches/listJoin")
+    Call<List<Match>> getJoinMatches();
 
 
 

@@ -22,7 +22,6 @@ import android.os.CountDownTimer;
 public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchViewHolder> {
     private List<Match> matches;
     private OnItemClickListener onItemClickListener;
-    private long matchEndTime;
     private int joinedMatchPosition = -1;
 
     public interface OnItemClickListener {
@@ -33,11 +32,6 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchVie
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.onItemClickListener = listener;
-    }
-
-    public void setMatchEndTime(long matchEndTime) {
-        this.matchEndTime = matchEndTime;
-        notifyDataSetChanged();
     }
 
     public void setJoinedMatchPosition(int position) {
@@ -68,14 +62,6 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchVie
 
         if (position == joinedMatchPosition) {
             holder.countdownTextView.setVisibility(View.VISIBLE);
-            long timeLeft = matchEndTime - currentTime;
-            if (timeLeft > 0) {
-                startCountdown(holder.countdownTextView, timeLeft, position);
-            } else {
-                holder.countdownTextView.setText("Time left: 00:00:00");
-                holder.finishButton.setVisibility(View.VISIBLE);
-                holder.joinButton.setVisibility(View.GONE);
-            }
         } else {
             holder.countdownTextView.setVisibility(View.GONE);
             holder.finishButton.setVisibility(View.GONE);
@@ -108,28 +94,6 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchVie
         return matches.size();
     }
 
-    private void startCountdown(TextView countdownTextView, long millisUntilFinished, int position) {
-        new CountDownTimer(millisUntilFinished, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                long secondsRemaining = millisUntilFinished / 1000;
-                long hours = secondsRemaining / 3600;
-                long minutes = (secondsRemaining % 3600) / 60;
-                long seconds = secondsRemaining % 60;
-                countdownTextView.setText(String.format("Time left: %02d:%02d:%02d", hours, minutes, seconds));
-            }
-
-            @Override
-            public void onFinish() {
-                countdownTextView.setText("Time left: 00:00:00");
-                notifyItemChanged(position);
-            }
-        }.start();
-    }
-
-    public void showFinishButton(int position) {
-        notifyItemChanged(position);
-    }
 
     public static class MatchViewHolder extends RecyclerView.ViewHolder {
         TextView matchTitleTextView;

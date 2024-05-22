@@ -26,7 +26,7 @@ public class LoadMatchesDataTask extends AsyncTask<Void, Void, List<Match>> {
     protected List<Match> doInBackground(Void... voids) {
         try {
             Log.i("LoadMatchesTask", "Loading matches");
-            Call<List<Match>> call = BackendComunication.getRetrofitRepository().getMatches();
+            Call<List<Match>> call = BackendComunication.getRetrofitRepository().getJoinMatches();
             retrofit2.Response<List<Match>> response = call.execute();
             if (response.isSuccessful()) {
                 return response.body();
