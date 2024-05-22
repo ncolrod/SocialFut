@@ -34,6 +34,8 @@ public class FootballMatchService {
     @Transactional
     public CreateMatchResponse createMatch(CreateMatchRequest request, @AuthenticationPrincipal UserDetails userDetails) {
         User user = (User) userDetails;
+        boolean isJoined = false;
+        boolean isFinished = false;
         try {
             if (user != null && user.getRole() != Role.USER) {
                 Team homeTeam = request.getHomeTeam();
@@ -85,6 +87,7 @@ public class FootballMatchService {
             if (footballMatch.getAwayTeam() != null) {
                 Hibernate.initialize(footballMatch.getAwayTeam().getUsers());
             } else {
+                footballMatch.setCreated(true);
                 footballMatch.setAwayTeam(awayTeam);
             }
 

@@ -113,7 +113,8 @@ public class MatchesFragment extends Fragment {
         protected Boolean doInBackground(Void... voids) {
             // Realizar la petición para unirse al partido en el hilo de fondo
             Match match = matchesList.get(position);
-            JoinMatchRequest request = new JoinMatchRequest(match.getId(), joinTeam);
+            boolean isCreated = true;
+            JoinMatchRequest request = new JoinMatchRequest(match.getId(), joinTeam, isCreated);
 
             try {
                 Call<JoinMatchResponse> joinMatchResponseCall = retrofitRepository.joinMatch(request);

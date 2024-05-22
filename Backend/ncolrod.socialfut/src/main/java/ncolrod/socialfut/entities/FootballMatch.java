@@ -40,6 +40,9 @@ public class FootballMatch {
     @JoinColumn(name = "creator_user_id")
     private User creatorUser;
 
+    private boolean isCreated;
+    private boolean isFinished;
+
     //Contructor para createMatch
     public FootballMatch(Team homeTeam, String location, User creatorUser, Timestamp date, double pricePerPerson) {
         this.homeTeam = homeTeam;
@@ -50,12 +53,13 @@ public class FootballMatch {
     }
 
     //Contructor para joinMatch
-    public FootballMatch(Team homeTeam, Team awayTeam, String location, Timestamp date, Double pricePerPerson, User creatorUser) {
+    public FootballMatch(Team homeTeam, Team awayTeam, String location, Timestamp date, Double pricePerPerson, User creatorUser, boolean isCreated) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.location = location;
         this.date = date;
         this.pricePerPerson = pricePerPerson;
         this.creatorUser = creatorUser;
+        this.isCreated = isCreated;
     }
 }

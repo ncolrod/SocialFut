@@ -16,9 +16,12 @@ public class JoinMatchRequest {
     private int matchId;
     @JsonProperty
     private Team awayTeam;
+    @JsonProperty
+    private boolean isCreated;
 
-    public JoinMatchRequest(int matchId, Team awayTeam) {
+    public JoinMatchRequest(int matchId, Team awayTeam, boolean isCreated) {
         this.matchId = matchId;
         this.awayTeam = awayTeam;
+        this.isCreated = isCreated;
     }
 }

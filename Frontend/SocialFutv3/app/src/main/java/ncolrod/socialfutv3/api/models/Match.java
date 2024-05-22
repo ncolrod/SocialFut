@@ -24,5 +24,7 @@ public class Match {
     private String summary;
     private Double pricePerPerson;
     private User creatorUser;
+    private boolean isCreated;
+    private boolean isFinished;
 
 }
