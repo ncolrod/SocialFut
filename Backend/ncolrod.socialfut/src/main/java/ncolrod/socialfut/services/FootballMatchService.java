@@ -1,5 +1,6 @@
 package ncolrod.socialfut.services;
 
+import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 import jakarta.persistence.UniqueConstraint;
 import ncolrod.socialfut.entities.FootballMatch;
 import ncolrod.socialfut.entities.Role;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FootballMatchService {
@@ -34,8 +36,6 @@ public class FootballMatchService {
     @Transactional
     public CreateMatchResponse createMatch(CreateMatchRequest request, @AuthenticationPrincipal UserDetails userDetails) {
         User user = (User) userDetails;
-        boolean isJoined = false;
-        boolean isFinished = false;
         try {
             if (user != null && user.getRole() != Role.USER) {
                 Team homeTeam = request.getHomeTeam();
@@ -53,6 +53,11 @@ public class FootballMatchService {
                         request.getPricePerPerson()
                 );
 
+                /*
+                Cuando un equipo crea un partido deja de estar disponible para unirse a otros partidos
+                 */
+                user.getTeam().setAvailable(true);
+                teamRepository.save(user.getTeam());
                 FootballMatch savedMatch = footballMatchRepository.save(footballMatch);
                 System.out.println(savedMatch.getId());
 
@@ -86,11 +91,15 @@ public class FootballMatchService {
 
             if (footballMatch.getAwayTeam() != null) {
                 Hibernate.initialize(footballMatch.getAwayTeam().getUsers());
-            } else {
-                footballMatch.setCreated(true);
-                footballMatch.setAwayTeam(awayTeam);
             }
 
+            /*
+            Cuando un equipo se une a un partido deja de estar disponible para unirse a otros partidos
+             */
+            footballMatch.setCreated(true);
+            footballMatch.setAwayTeam(awayTeam);
+            user.getTeam().setAvailable(true);
+            teamRepository.save(user.getTeam());
             footballMatchRepository.save(footballMatch);
             return new JoinMatchResponse(true, "Successfully joined the match", footballMatch);
         } catch (Exception e) {
@@ -126,4 +135,35 @@ public class FootballMatchService {
             throw new Exception("Error desconocido al recuperar los partidos de fútbol", e);
         }
     }
+
+    @Transactional
+    public boolean cancelMatch(int matchId, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+        if (user == null || user.getRole() == Role.USER) {
+            return false; // O lanzar una excepción adecuada
+        }
+
+        try {
+            Optional<FootballMatch> matchOptional = footballMatchRepository.findById(matchId);
+            if (matchOptional.isPresent()) {
+                FootballMatch match = matchOptional.get();
+                if (match.isCreated()) {
+                    match.setCreated(false);
+                    Team visitorTeam = match.getAwayTeam();
+                    if (visitorTeam != null) {
+                        visitorTeam.setAvailable(false);
+                        teamRepository.save(visitorTeam);
+                    }
+                    match.setAwayTeam(null);
+                    footballMatchRepository.save(match);
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 }

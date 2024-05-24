@@ -22,4 +22,5 @@ public class Team {
     private String description;
     private User captain;
     private List<User> users;
+    private boolean isAvailable;
 }

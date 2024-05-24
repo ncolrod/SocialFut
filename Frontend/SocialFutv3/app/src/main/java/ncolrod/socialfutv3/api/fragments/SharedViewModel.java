@@ -7,26 +7,16 @@ import androidx.lifecycle.ViewModel;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import ncolrod.socialfutv3.api.models.Goal;
 import ncolrod.socialfutv3.api.models.Match;
 import ncolrod.socialfutv3.api.models.Team;
 import ncolrod.socialfutv3.api.models.User;
 
-/**
- * Clase que representa el ViewModel compartido entre los fragmentos y la actividad principal
- * Esta clase tiene todos los datos que se comparten entre los fragmentos y la actividad principal
- * Los datos que se comparten son:
- * - Usuario
- * - Partidos
- * - Estadísticas del usuario
- */
-
 @Getter
 public class SharedViewModel extends ViewModel {
 
     private MutableLiveData<User> user; // Usuario actual
-    private MutableLiveData<Team> team;
+    private MutableLiveData<Team> team; // Equipo del usuario actual
     private MutableLiveData<List<Match>> matches; // Partidos del equipo
     private MutableLiveData<List<Goal>> userStatistics; // Estadísticas del usuario
     private MutableLiveData<List<User>> players; // Jugadores del equipo
@@ -38,7 +28,7 @@ public class SharedViewModel extends ViewModel {
         matches = new MutableLiveData<>();
         userStatistics = new MutableLiveData<>();
         players = new MutableLiveData<>();
-        joinedMatch = new MutableLiveData<>(); // Inicializa la variable
+        joinedMatch = new MutableLiveData<>();
     }
 
     public void setUser(User user) {
@@ -65,27 +55,27 @@ public class SharedViewModel extends ViewModel {
         this.joinedMatch.setValue(match);
     }
 
-    public LiveData<User> getUserLiveData() {
+    public MutableLiveData<User> getUserLiveData() {
         return user;
     }
 
-    public LiveData<Team> getTeamLiveData() {
+    public MutableLiveData<Team> getTeamLiveData() {
         return team;
     }
 
-    public LiveData<List<Match>> getMatchesLiveData() {
+    public MutableLiveData<List<Match>> getMatchesLiveData() {
         return matches;
     }
 
-    public LiveData<List<Goal>> getUserStatisticsLiveData() {
+    public MutableLiveData<List<Goal>> getUserStatisticsLiveData() {
         return userStatistics;
     }
 
-    public LiveData<List<User>> getPlayersLiveData() {
+    public MutableLiveData<List<User>> getPlayersLiveData() {
         return players;
     }
 
-    public LiveData<Match> getJoinedMatchLiveData() {
+    public MutableLiveData<Match> getJoinedMatchLiveData() {
         return joinedMatch;
     }
 

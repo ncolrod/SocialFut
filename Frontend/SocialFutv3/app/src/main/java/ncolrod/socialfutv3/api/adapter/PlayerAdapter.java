@@ -30,7 +30,6 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         User player = players.get(position);
         holder.playerNameTextView.setText(player.getFirstname() + " " + player.getLastname());
         holder.playerPositionTextView.setText(player.getPosition());
-        // Puedes añadir más campos si es necesario
     }
 
     @Override

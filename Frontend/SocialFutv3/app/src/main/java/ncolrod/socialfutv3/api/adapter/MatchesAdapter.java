@@ -1,13 +1,10 @@
 package ncolrod.socialfutv3.api.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,102 +14,100 @@ import java.util.List;
 import lombok.NonNull;
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.Match;
-import android.os.CountDownTimer;
 
 public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchViewHolder> {
-    private List<Match> matches;
-    private OnItemClickListener onItemClickListener;
-    private int joinedMatchPosition = -1;
+    private Context context;
+    private List<Match> matchesList;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onCardClick(int position);
         void onJoinButtonClick(int position);
-        void onFinishButtonClick(int position);
+        void onCancelButtonClick(int position);
+        void onInfoButtonClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.onItemClickListener = listener;
-    }
-
-    public void setJoinedMatchPosition(int position) {
-        this.joinedMatchPosition = position;
-        notifyDataSetChanged();
-    }
-
-    public MatchesAdapter(Context context, List<Match> matches) {
-        this.matches = matches;
+    public MatchesAdapter(Context context, List<Match> matchesList) {
+        this.context = context;
+        this.matchesList = matchesList;
     }
 
     @NonNull
     @Override
     public MatchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_match, parent, false);
-        return new MatchViewHolder(view, onItemClickListener);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_match, parent, false);
+        return new MatchViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MatchViewHolder holder, int position) {
-        Match match = matches.get(position);
-        long currentTime = System.currentTimeMillis();
-
-        holder.matchTitleTextView.setText(String.format("TEAM: %s", match.getHomeTeam().getName()));
-        holder.locationTextView.setText(match.getLocation());
-        holder.priceTextView.setText(String.format("Price per player: %s", match.getPricePerPerson()));
-        holder.dateTextView.setText(match.getDate().toString());
-
-        if (position == joinedMatchPosition) {
-            holder.countdownTextView.setVisibility(View.VISIBLE);
-        } else {
-            holder.countdownTextView.setVisibility(View.GONE);
-            holder.finishButton.setVisibility(View.GONE);
-            holder.joinButton.setVisibility(View.VISIBLE);
-            holder.joinButton.setEnabled(true);
-        }
-
-        holder.joinButton.setOnClickListener(v -> {
-            if (onItemClickListener != null && holder.getAdapterPosition() != RecyclerView.NO_POSITION) {
-                onItemClickListener.onJoinButtonClick(holder.getAdapterPosition());
-                holder.joinButton.setEnabled(false);  // Desactiva el botón una vez que se ha unido
-            }
-        });
-
-        holder.finishButton.setOnClickListener(v -> {
-            if (onItemClickListener != null && holder.getAdapterPosition() != RecyclerView.NO_POSITION) {
-                onItemClickListener.onFinishButtonClick(holder.getAdapterPosition());
-            }
-        });
-
-        holder.itemView.setOnClickListener(v -> {
-            if (onItemClickListener != null && holder.getAdapterPosition() != RecyclerView.NO_POSITION) {
-                onItemClickListener.onCardClick(holder.getAdapterPosition());
-            }
-        });
+        Match match = matchesList.get(position);
+        holder.bind(match, listener);
     }
 
     @Override
     public int getItemCount() {
-        return matches.size();
+        return matchesList.size();
     }
 
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
-    public static class MatchViewHolder extends RecyclerView.ViewHolder {
-        TextView matchTitleTextView;
-        TextView locationTextView;
-        TextView priceTextView;
-        TextView dateTextView;
-        TextView countdownTextView;
-        Button joinButton;
-        Button finishButton;
+    class MatchViewHolder extends RecyclerView.ViewHolder {
+        private Button joinButton;
+        private Button cancelButton;
+        private Button infoButton;
+        private TextView textViewTeamHomeName, textViewLocation, textViewDate, textViewPricePerPerson;
 
-        public MatchViewHolder(@NonNull View itemView, OnItemClickListener listener) {
+        public MatchViewHolder(@NonNull View itemView) {
             super(itemView);
-            matchTitleTextView = itemView.findViewById(R.id.teamNameTextView);
-            locationTextView = itemView.findViewById(R.id.locationTextView);
-            priceTextView = itemView.findViewById(R.id.pricePerPersonTextView);
-            dateTextView = itemView.findViewById(R.id.dateTextView);
-            countdownTextView = itemView.findViewById(R.id.countdownTextView);
             joinButton = itemView.findViewById(R.id.joinButton);
-            finishButton = itemView.findViewById(R.id.finishButton);
+            cancelButton = itemView.findViewById(R.id.cancelButton);
+            infoButton = itemView.findViewById(R.id.infoButton);
+            textViewTeamHomeName = itemView.findViewById(R.id.teamNameTextView);
+            textViewLocation = itemView.findViewById(R.id.locationTextView);
+            textViewDate = itemView.findViewById(R.id.dateTextView);
+            textViewPricePerPerson = itemView.findViewById(R.id.pricePerPersonTextView);
+        }
+
+        public void bind(Match match, OnItemClickListener listener) {
+            textViewTeamHomeName.setText(match.getHomeTeam().getName());
+            textViewLocation.setText(match.getLocation());
+            textViewDate.setText(match.getDate().toString());
+            textViewPricePerPerson.setText(String.valueOf(match.getPricePerPerson()));
+
+            joinButton.setVisibility(match.isCreated() ? View.GONE : View.VISIBLE);
+            cancelButton.setVisibility(match.isCreated() ? View.VISIBLE : View.GONE);
+            infoButton.setVisibility(match.isCreated() ? View.VISIBLE : View.GONE);
+
+            joinButton.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onJoinButtonClick(position);
+                    }
+                }
+            });
+
+            cancelButton.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onCancelButtonClick(position);
+                    }
+                }
+            });
+
+            infoButton.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onInfoButtonClick(position);
+                    }
+                }
+            });
+
         }
     }
 }

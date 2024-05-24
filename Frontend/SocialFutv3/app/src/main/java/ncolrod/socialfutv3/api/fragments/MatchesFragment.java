@@ -53,6 +53,7 @@ public class MatchesFragment extends Fragment {
         retrofitRepository = BackendComunication.getRetrofitRepository();
 
         new LoadMatchesDataTask(sharedViewModel, retrofitRepository).execute();
+        new LoadTeamDataTask(sharedViewModel,retrofitRepository).execute();
 
         sharedViewModel.getMatchesLiveData().observe(getViewLifecycleOwner(), matches -> {
             if (matches != null) {
@@ -64,15 +65,23 @@ public class MatchesFragment extends Fragment {
                 matchesAdapter.setOnItemClickListener(new MatchesAdapter.OnItemClickListener() {
                     @Override
                     public void onCardClick(int position) {
-                        // Handle card click
                     }
 
                     @Override
                     public void onJoinButtonClick(int position) {
-                        // Desactivar otros partidos
+                        joinTeam = sharedViewModel.getTeamLiveData().getValue();
+                        if (joinTeam.isAvailable()==true) {
+                            new AlertDialog.Builder(getContext())
+                                    .setTitle("Error")
+                                    .setMessage("Tu equipo no está disponible para unirse a otros partidos.")
+                                    .setPositiveButton("OK", null)
+                                    .show();
+                            return;
+                        }
+
                         for (int i = 0; i < matchesList.size(); i++) {
                             if (i != position) {
-                                matchesAdapter.notifyItemChanged(i);
+                                matchesList.get(i).setCreated(false);
                             }
                         }
 
@@ -81,7 +90,6 @@ public class MatchesFragment extends Fragment {
                                 .setView(new EditText(getContext()))
                                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        // Realizar la petición para unirse al partido en una tarea asíncrona
                                         new JoinMatchTask(position, joinTeam).execute();
                                     }
                                 })
@@ -90,8 +98,18 @@ public class MatchesFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFinishButtonClick(int position) {
-                        // Handle finish button click
+                    public void onCancelButtonClick(int position) {
+                        new CancelMatchTask(position, matchesList.get(position).getId()).execute();
+                    }
+
+                    @Override
+                    public void onInfoButtonClick(int position) {
+                        // Navegar al fragment de detalles del partido
+                        MatchDetailFragment matchDetailsFragment = MatchDetailFragment.newInstance(matchesList.get(position).getId());
+                        getParentFragmentManager().beginTransaction()
+                                .replace(R.id.frame_layout, matchDetailsFragment)
+                                .addToBackStack(null)
+                                .commit();
                     }
                 });
             }
@@ -111,23 +129,15 @@ public class MatchesFragment extends Fragment {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            // Realizar la petición para unirse al partido en el hilo de fondo
             Match match = matchesList.get(position);
-            boolean isCreated = true;
-            JoinMatchRequest request = new JoinMatchRequest(match.getId(), joinTeam, isCreated);
+            JoinMatchRequest request = new JoinMatchRequest(match.getId(), joinTeam, true);
 
             try {
-                Call<JoinMatchResponse> joinMatchResponseCall = retrofitRepository.joinMatch(request);
-                Response<JoinMatchResponse> joinResponse = joinMatchResponseCall.execute();
-                if (joinResponse.isSuccessful()) {
-                    Log.e(":::JoinMatchTask:::", "Successful loading join match");
-                    return true;
-                } else {
-                    Log.e(":::JoinMatchTask:::", "Error loading join match: " + joinResponse.code() + " " + joinResponse.message());
-                    return false;
-                }
+                Call<JoinMatchResponse> call = retrofitRepository.joinMatch(request);
+                Response<JoinMatchResponse> response = call.execute();
+                return response.isSuccessful();
             } catch (IOException e) {
-                Log.e(":::JoinMatchTask:::", "Error loading join match: " + e);
+                e.printStackTrace();
                 return false;
             }
         }
@@ -136,12 +146,65 @@ public class MatchesFragment extends Fragment {
         protected void onPostExecute(Boolean success) {
             super.onPostExecute(success);
             if (success) {
-                // Si la petición fue exitosa, cargar el equipo del usuario
                 new LoadTeamDataTask(sharedViewModel, retrofitRepository).execute();
+                matchesList.get(position).setCreated(true);
+                matchesAdapter.notifyItemChanged(position);
+                if (joinTeam != null) {
+                    joinTeam.setAvailable(true);
+                    sharedViewModel.getTeamLiveData().setValue(joinTeam);
+                    Log.i(":::JoinMatchTask:::", "Equipo se ha unido al partido");
+                }
             } else {
-                // Manejar el caso de que la petición no sea exitosa
                 Log.e(":::JoinMatchTask:::", "Error loading join match");
+                matchesList.get(position).setCreated(false);
+                matchesAdapter.notifyItemChanged(position);
             }
         }
     }
+
+    private class CancelMatchTask extends AsyncTask<Void, Void, Boolean> {
+        private int position;
+        private int matchId;
+
+        public CancelMatchTask(int position, int matchId) {
+            this.position = position;
+            this.matchId = matchId;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Call<Boolean> call = retrofitRepository.cancelMatch(matchId);
+                Response<Boolean> response = call.execute();
+                if (response.isSuccessful()) {
+                    return true;
+                } else {
+                    Log.i(":::CancelMatchTask:::", response.code() + " " + response.errorBody().string());
+                    return false;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+            if (success) {
+                joinTeam = sharedViewModel.getTeamLiveData().getValue();
+                if (joinTeam != null) {
+                    joinTeam.setAvailable(false);
+                    sharedViewModel.getTeamLiveData().setValue(joinTeam);
+                    matchesList.get(position).setCreated(false);
+                    matchesAdapter.notifyItemChanged(position);
+                    Log.i(":::CancelMatchTask:::", "Equipo se ha salido del partido y está disponible");
+                }
+            } else {
+                Log.e(":::CancelMatchTask:::", "Error canceling join match");
+            }
+        }
+    }
+
 }
+

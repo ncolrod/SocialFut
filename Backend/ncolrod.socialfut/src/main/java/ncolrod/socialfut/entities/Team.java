@@ -27,6 +27,7 @@ public class Team {
     private String join_code;
     private String team_color;
     private String description;
+    private boolean isAvailable;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private List<User> users;

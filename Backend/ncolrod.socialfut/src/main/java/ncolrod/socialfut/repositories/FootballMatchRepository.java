@@ -1,6 +1,7 @@
 package ncolrod.socialfut.repositories;
 
 import ncolrod.socialfut.entities.FootballMatch;
+import ncolrod.socialfut.entities.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,7 @@ public interface FootballMatchRepository extends JpaRepository<FootballMatch, In
 
     @Query("SELECT f FROM FootballMatch f WHERE f.homeTeam.id != :idTeam")
     List<FootballMatch> listMatchToJoin(int idTeam);
+
 
 
 }

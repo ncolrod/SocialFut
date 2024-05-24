@@ -89,14 +89,6 @@
                 android:textColor="@color/black"/>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/countdownTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Time left: 00:00"
-            android:textColor="#FF0000"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone"/> <!-- Inicialmente oculto -->
 
         <Button
             android:id="@+id/joinButton"
@@ -113,6 +105,24 @@
             android:layout_height="wrap_content"
             android:text="Finalizar"
             android:backgroundTint="@color/black"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            android:backgroundTint="#FF0000"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/infoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Info"
+            android:backgroundTint="#0040FF"
             android:textColor="@android:color/white"
             android:visibility="gone" />
     </LinearLayout>

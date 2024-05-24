@@ -71,7 +71,7 @@ public class CreateMatchFragment extends Fragment {
         try {
             price = Double.parseDouble(priceEditText.getText().toString());
         } catch (NumberFormatException e) {
-            price = 0.0; // Default to 0 if parsing fails
+            price = 0.0;
         }
 
         Calendar calendar = Calendar.getInstance();

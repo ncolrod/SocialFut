@@ -49,7 +49,7 @@ public class FootballMatchController {
     @GetMapping("/list")
     public ResponseEntity<List<FootballMatch>> getAllMatches() throws Exception {
         List<FootballMatch> matches = footballMatchService.findAllMatches();
-        if (matches!=null){
+        if (matches != null) {
             return ResponseEntity.ok(matches);
         } else {
             return ResponseEntity.badRequest().build();
@@ -59,12 +59,23 @@ public class FootballMatchController {
     @GetMapping("/listJoin")
     public ResponseEntity<List<FootballMatch>> getJoinMatches(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
         List<FootballMatch> matches = footballMatchService.listJoinMatches(userDetails);
-        if (matches!=null){
+        if (matches != null) {
             return ResponseEntity.ok(matches);
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PostMapping("/cancel/{matchId}")
+    public ResponseEntity<Boolean> cancelMatch(@PathVariable int matchId, @AuthenticationPrincipal UserDetails userDetails) {
+        boolean result = footballMatchService.cancelMatch(matchId, userDetails);
+        if (result) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
+        }
+    }
+
 
 }
 
