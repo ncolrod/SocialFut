@@ -84,7 +84,7 @@ public class MatchesFragment extends Fragment {
                                     .setPositiveButton("OK", null)
                                     .show();
                             return;
-                        } else if (currentTeam.isAvailable()==true){
+                        } else if (currentTeam.isAvailable() == true) {
                             new AlertDialog.Builder(getContext())
                                     .setTitle("Error")
                                     .setMessage("Tu equipo ya esta en un partido.")
@@ -99,12 +99,12 @@ public class MatchesFragment extends Fragment {
                                     .setNegativeButton("No", null)
                                     .show();
                         }
-                        }
+                    }
 
 
                     @Override
                     public void onCancelButtonClick(int position) {
-                        if (currentUser.getRole() == Role.ADMIN){
+                        if (currentUser.getRole() == Role.ADMIN) {
                             new CancelMatchTask(position, matchesList.get(position).getId()).execute();
                         } else {
                             Toast.makeText(getContext(), "No tienes permisos para cancelar un partido. Solo los capitanes", Toast.LENGTH_SHORT);
@@ -123,9 +123,27 @@ public class MatchesFragment extends Fragment {
 
                     @Override
                     public void onModifyButtonClick(int position) {
-                        if (currentUser.getId() == matchesList.get(position).getCreatorUser().getId()){
+                        if (currentUser.getId() == matchesList.get(position).getCreatorUser().getId()) {
+                            sharedViewModel.getMatchesLiveData().observe(getViewLifecycleOwner(), matches -> {
+                                if (matches != null) {
+                                    for (Match match : matches) {
+                                        // Verificar que el equipo no sea nulo antes de intentar acceder a él
+                                        if (match.getHomeTeam() != null && match.getHomeTeam().getName() != null) {
+                                            // Usar el nombre del equipo
+                                            Log.d("MyMatchFragment", "Home Team: " + match.getHomeTeam().getName());
+                                        } else {
+                                            Log.d("MyMatchFragment", "Home Team is null");
+                                        }
+                                    }
+                                }
+                            });
 
-
+                            Match match = matchesList.get(position);
+                            EditMatchFragment editMatchFragment = EditMatchFragment.newInstance(match);
+                            getParentFragmentManager().beginTransaction()
+                                    .replace(R.id.frame_layout, editMatchFragment)
+                                    .addToBackStack(null)
+                                    .commit();
                         } else {
                             new AlertDialog.Builder(getContext())
                                     .setTitle("No tienes permisos para editar el partido")
@@ -230,7 +248,7 @@ public class MatchesFragment extends Fragment {
                 Team joinTeam = sharedViewModel.getTeamLiveData().getValue();
                 if (joinTeam != null) {
                     joinTeam.setAvailable(false);
-                    sharedViewModel.getTeamLiveData().setValue(joinTeam);
+                    sharedViewModel.setTeam(joinTeam);
                     matchesList.get(position).setCreated(false);
                     matchesAdapter.notifyItemChanged(position);
                     Log.i(":::CancelMatchTask:::", "Equipo se ha salido del partido y está disponible");
@@ -255,11 +273,11 @@ public class MatchesFragment extends Fragment {
             try {
                 Call<GenericResponse> call = retrofitRepository.deleteMatch(matchId);
                 Response<GenericResponse> response = call.execute();
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Log.i(":::TaskDeleteMatch:::", "Borrado con exito");
                     return true;
                 } else {
-                    Log.i(":::TaskDeleteMatch:::", "Error: "+response.code());
+                    Log.i(":::TaskDeleteMatch:::", "Error: " + response.code());
                     return false;
                 }
             } catch (IOException e) {

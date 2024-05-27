@@ -228,30 +228,27 @@ public class FootballMatchService {
         }
     }
 
-    @Transactional
-    public boolean updateMatch(int matchId, CreateMatchRequest request, @AuthenticationPrincipal UserDetails userDetails) {
-        User user = (User) userDetails;
-        try {
-            Optional<FootballMatch> matchOptional = footballMatchRepository.findById(matchId);
-            if (matchOptional.isPresent()) {
-                FootballMatch match = matchOptional.get();
-                if (match.getCreatorUser().getId() == user.getId()) {
-                    match.setHomeTeam(request.getHomeTeam());
-                    match.setLocation(request.getLocation());
-                    match.setDate(request.getDate());
-                    match.setPricePerPerson(request.getPricePerPerson());
-                    footballMatchRepository.save(match);
-                    return true;
-                } else {
-                    throw new SecurityException("Unauthorized to update this match");
-                }
-            } else {
-                throw new EntityNotFoundException("Match not found");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public boolean updateMatch(int matchId, CreateMatchRequest request, UserDetails userDetails) {
+        // Buscar el partido por ID
+        FootballMatch match = footballMatchRepository.findById(matchId).orElse(null);
+        if (match == null) {
             return false;
         }
+
+        // Verificar si el usuario tiene permisos para actualizar el partido
+        if (!match.getCreatorUser().getUsername().equals(userDetails.getUsername())) {
+            return false;
+        }
+
+        // Actualizar los campos del partido
+        match.setDate(request.getDate());
+        match.setLocation(request.getLocation());
+        match.setPricePerPerson(request.getPricePerPerson());
+        // Actualizar otros campos según sea necesario
+
+        // Guardar los cambios
+        footballMatchRepository.save(match);
+        return true;
     }
 
 

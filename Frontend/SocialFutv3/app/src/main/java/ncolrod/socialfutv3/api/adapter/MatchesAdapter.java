@@ -8,7 +8,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.Match;
 import ncolrod.socialfutv3.api.models.Role;
@@ -53,39 +55,79 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchVie
     public void onBindViewHolder(@NonNull MatchViewHolder holder, int position) {
         Match match = matchesList.get(position);
 
-        holder.teamNameTextView.setText(match.getHomeTeam().getName());
-        holder.dateTextView.setText(match.getDate().toString());
-        holder.locationTextView.setText(match.getLocation());
-        holder.pricePerPersonTextView.setText(String.format("Price per person: %s", match.getPricePerPerson()));
+        if (match.getHomeTeam() != null) {
+            holder.teamNameTextView.setText(match.getHomeTeam().getName());
+        } else {
+            holder.teamNameTextView.setText("Unknown Home Team");
+        }
 
+        if (match.getDate() != null) {
+            holder.dateTextView.setText(formatDate(match.getDate().toString()));
+        } else {
+            holder.dateTextView.setText("Unknown Date");
+        }
+
+        if (match.getLocation() != null) {
+            holder.locationTextView.setText(match.getLocation());
+        } else {
+            holder.locationTextView.setText("Unknown Location");
+        }
+
+        if (match.getPricePerPerson() != null) {
+            holder.pricePerPersonTextView.setText(String.format("Price per person: %s", match.getPricePerPerson()));
+        } else {
+            holder.pricePerPersonTextView.setText("Unknown Price");
+        }
+
+        configureButtonsVisibility(holder, match);
+
+        holder.joinButton.setOnClickListener(v -> {
+            if (listener != null) listener.onJoinButtonClick(position);
+        });
+        holder.cancelButton.setOnClickListener(v -> {
+            if (listener != null) listener.onCancelButtonClick(position);
+        });
+        holder.infoButton.setOnClickListener(v -> {
+            if (listener != null) listener.onInfoButtonClick(position);
+        });
+        holder.modifyButton.setOnClickListener(v -> {
+            if (listener != null) listener.onModifyButtonClick(position);
+        });
+        holder.deleteButton.setOnClickListener(v -> {
+            if (listener != null) listener.onDeleteButtonClick(position);
+        });
+    }
+
+    private String formatDate(String date) {
+        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat targetFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
+        try {
+            return targetFormat.format(originalFormat.parse(date));
+        } catch (Exception e) {
+            return date;
+        }
+    }
+
+    private void configureButtonsVisibility(MatchViewHolder holder, Match match) {
+        boolean isCreator = currentUser.getId() == match.getCreatorUser().getId();
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
         boolean hasJoined = match.isCreated();
 
-        if (currentUser.getId()==match.getCreatorUser().getId()) {
-            holder.joinButton.setVisibility(View.GONE);
-            holder.cancelButton.setVisibility(View.GONE);
+        holder.joinButton.setVisibility(View.GONE);
+        holder.cancelButton.setVisibility(View.GONE);
+        holder.modifyButton.setVisibility(View.GONE);
+        holder.deleteButton.setVisibility(View.GONE);
+
+        if (isCreator) {
             holder.modifyButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setVisibility(View.VISIBLE);
-        } else if (currentUser.getRole() == Role.ADMIN) {
+        } else if (isAdmin) {
             holder.joinButton.setVisibility(View.VISIBLE);
             holder.cancelButton.setVisibility(hasJoined ? View.VISIBLE : View.GONE);
-            holder.modifyButton.setVisibility(View.GONE);
-            holder.deleteButton.setVisibility(View.GONE);
-        } else {
-            holder.joinButton.setVisibility(View.GONE);
-            holder.cancelButton.setVisibility(View.GONE);
-            holder.modifyButton.setVisibility(View.GONE);
-            holder.deleteButton.setVisibility(View.GONE);
         }
 
         holder.infoButton.setVisibility(View.VISIBLE);
-
-        holder.joinButton.setOnClickListener(v -> listener.onJoinButtonClick(position));
-        holder.cancelButton.setOnClickListener(v -> listener.onCancelButtonClick(position)); // Manejar la lógica para cancelar
-        holder.infoButton.setOnClickListener(v -> listener.onInfoButtonClick(position));
-        holder.modifyButton.setOnClickListener(v -> listener.onModifyButtonClick(position));
-        holder.deleteButton.setOnClickListener(v -> listener.onDeleteButtonClick(position));
     }
-
 
     @Override
     public int getItemCount() {

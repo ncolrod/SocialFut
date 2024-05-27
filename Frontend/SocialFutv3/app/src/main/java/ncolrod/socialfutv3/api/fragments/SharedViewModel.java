@@ -15,21 +15,12 @@ import ncolrod.socialfutv3.api.models.User;
 @Getter
 public class SharedViewModel extends ViewModel {
 
-    private MutableLiveData<User> user; // Usuario actual
-    private MutableLiveData<Team> team; // Equipo del usuario actual
-    private MutableLiveData<List<Match>> matches; // Partidos del equipo
-    private MutableLiveData<List<Goal>> userStatistics; // Estadísticas del usuario
-    private MutableLiveData<List<User>> players; // Jugadores del equipo
-    private MutableLiveData<Match> joinedMatch; // Partido al que se ha unido el usuario
-
-    public SharedViewModel() {
-        user = new MutableLiveData<>();
-        team = new MutableLiveData<>();
-        matches = new MutableLiveData<>();
-        userStatistics = new MutableLiveData<>();
-        players = new MutableLiveData<>();
-        joinedMatch = new MutableLiveData<>();
-    }
+    private MutableLiveData<User> user = new MutableLiveData<>(); // Usuario actual
+    private MutableLiveData<Team> team = new MutableLiveData<>(); // Equipo del usuario actual
+    private MutableLiveData<List<Match>> matches = new MutableLiveData<>(); // Partidos del equipo
+    private MutableLiveData<List<Goal>> userStatistics = new MutableLiveData<>(); // Estadísticas del usuario
+    private MutableLiveData<List<User>> players = new MutableLiveData<>(); // Jugadores del equipo
+    private MutableLiveData<Match> joinedMatch = new MutableLiveData<>(); // Partido al que se ha unido el usuario
 
     public void setUser(User user) {
         this.user.setValue(user);
@@ -55,34 +46,33 @@ public class SharedViewModel extends ViewModel {
         this.joinedMatch.setValue(match);
     }
 
-    public MutableLiveData<User> getUserLiveData() {
+    public LiveData<User> getUserLiveData() {
         return user;
     }
 
-    public MutableLiveData<Team> getTeamLiveData() {
+    public LiveData<Team> getTeamLiveData() {
         return team;
     }
 
-    public MutableLiveData<List<Match>> getMatchesLiveData() {
+    public LiveData<List<Match>> getMatchesLiveData() {
         return matches;
     }
 
-    public MutableLiveData<List<Goal>> getUserStatisticsLiveData() {
+    public LiveData<List<Goal>> getUserStatisticsLiveData() {
         return userStatistics;
     }
 
-    public MutableLiveData<List<User>> getPlayersLiveData() {
+    public LiveData<List<User>> getPlayersLiveData() {
         return players;
     }
 
-    public MutableLiveData<Match> getJoinedMatchLiveData() {
+    public LiveData<Match> getJoinedMatchLiveData() {
         return joinedMatch;
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-
         // Limpiar la memoria
         user = null;
         team = null;

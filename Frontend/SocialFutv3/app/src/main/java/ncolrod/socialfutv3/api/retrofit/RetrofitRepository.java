@@ -96,6 +96,11 @@ public interface RetrofitRepository {
 
     @DELETE("/matches/{matchId}")
     Call<GenericResponse> deleteMatch(@Path("matchId") int matchId);
+    @PUT("matches/{id}")
+    Call<GenericResponse> updateMatch(@Path("id") int id, @Body CreateMatchRequest request);
+
+
+
 
 
 

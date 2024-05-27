@@ -1,6 +1,7 @@
 package ncolrod.socialfutv3.api.models;
 
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Match {
+public class Match implements Serializable {
 
     private int id;
     private Team homeTeam;
