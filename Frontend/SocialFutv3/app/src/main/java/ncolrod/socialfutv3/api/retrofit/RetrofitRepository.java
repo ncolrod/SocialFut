@@ -13,11 +13,13 @@ import ncolrod.socialfutv3.api.requests.TeamJoinRequest;
 import ncolrod.socialfutv3.api.requests.TeamRegisterRequest;
 import ncolrod.socialfutv3.api.responses.AuthenticationRespose;
 import ncolrod.socialfutv3.api.responses.CreateMatchResponse;
+import ncolrod.socialfutv3.api.responses.GenericResponse;
 import ncolrod.socialfutv3.api.responses.JoinMatchResponse;
 import ncolrod.socialfutv3.api.responses.TeamJoinResponse;
 import ncolrod.socialfutv3.api.responses.TeamRegisterResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -86,6 +88,15 @@ public interface RetrofitRepository {
 
     @POST("matches/cancel/{matchId}")
     Call<Boolean> cancelMatch(@Path("matchId") int matchId);
+    @POST("matches/{id}/result/home")
+    Call<Void> updateHomeResult(@Path("id") int matchId, @Query("result") String result);
+
+    @POST("matches/{id}/result/away")
+    Call<Void> updateAwayResult(@Path("id") int matchId, @Query("result") String result);
+
+    @DELETE("/matches/{matchId}")
+    Call<GenericResponse> deleteMatch(@Path("matchId") int matchId);
+
 
 
 

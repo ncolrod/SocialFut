@@ -1,10 +1,12 @@
 package ncolrod.socialfut.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
 import ncolrod.socialfut.entities.FootballMatch;
 import ncolrod.socialfut.entities.User;
 import ncolrod.socialfut.requests.CreateMatchRequest;
 import ncolrod.socialfut.requests.JoinMatchRequest;
 import ncolrod.socialfut.responses.CreateMatchResponse;
+import ncolrod.socialfut.responses.GenericResponse;
 import ncolrod.socialfut.responses.JoinMatchResponse;
 import ncolrod.socialfut.services.FootballMatchService;
 import org.springframework.http.HttpStatus;
@@ -73,6 +75,50 @@ public class FootballMatchController {
             return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
+        }
+    }
+
+    @PostMapping("/{id}/result/home")
+    public ResponseEntity<?> updateHomeResult(@PathVariable int id, @RequestParam String result) {
+        try {
+            footballMatchService.updateCheckHome(id, result);
+            return ResponseEntity.ok("Home result updated successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/result/away")
+    public ResponseEntity<?> updateAwayResult(@PathVariable int id, @RequestParam String result) {
+        try {
+            footballMatchService.updateCheckAway(id, result);
+            return ResponseEntity.ok("Away result updated successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{matchId}")
+    public ResponseEntity<GenericResponse> deleteMatch(@PathVariable int matchId, @AuthenticationPrincipal UserDetails userDetails) {
+        boolean success = footballMatchService.deleteMatch(matchId, userDetails);
+        if (success) {
+            return ResponseEntity.ok(new GenericResponse(true, "Match deleted successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse(false, "Failed to delete match"));
+        }
+    }
+
+    @PutMapping("/{matchId}")
+    public ResponseEntity<GenericResponse> updateMatch(@PathVariable int matchId, @RequestBody CreateMatchRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+        boolean success = footballMatchService.updateMatch(matchId, request, userDetails);
+        if (success) {
+            return ResponseEntity.ok(new GenericResponse(true, "Match updated successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse(false, "Failed to update match"));
         }
     }
 

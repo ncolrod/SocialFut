@@ -43,6 +43,10 @@ public class FootballMatch {
     private boolean isCreated;
     private boolean isFinished;
 
+    private String checkHome;
+    private String checkAway;
+
+
     //Contructor para createMatch
     public FootballMatch(Team homeTeam, String location, User creatorUser, Timestamp date, double pricePerPerson) {
         this.homeTeam = homeTeam;

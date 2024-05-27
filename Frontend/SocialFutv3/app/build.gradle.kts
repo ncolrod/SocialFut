@@ -56,5 +56,6 @@ dependencies {
     // implementamos jackson
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
     implementation("com.squareup.retrofit2:converter-jackson:2.11.0")
+    implementation("com.google.android.material:material:1.4.0")
 
 }

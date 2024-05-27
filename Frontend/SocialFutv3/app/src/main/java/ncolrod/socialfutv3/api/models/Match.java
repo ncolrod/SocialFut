@@ -26,5 +26,7 @@ public class Match {
     private User creatorUser;
     private boolean isCreated;
     private boolean isFinished;
+    private String checkHome;
+    private String checkAway;
 
 }

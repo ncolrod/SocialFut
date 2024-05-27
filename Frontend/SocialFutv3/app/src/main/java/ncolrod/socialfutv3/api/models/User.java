@@ -19,8 +19,22 @@ public class User {
     private String position;
     private String email;
 
+    private Role role;
+
     public User() {
     }
+
+    public User(int id, String firstname, String lastname, String telephone, String location, String position, String email, Role role) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.telephone = telephone;
+        this.location = location;
+        this.position = position;
+        this.email = email;
+        this.role = role;
+    }
+
     public User(int id, String firstname, String lastname, String telephone, String location, String position, String email) {
         this.id = id;
         this.firstname = firstname;
@@ -29,6 +43,10 @@ public class User {
         this.location = location;
         this.position = position;
         this.email = email;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public String getPosition() {

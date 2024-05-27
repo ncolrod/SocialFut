@@ -50,13 +50,17 @@
                     android:textSize="16sp"
                     android:layout_marginBottom="8dp" />
 
-                <DatePicker
-                    android:id="@+id/datePicker"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/datePickerButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:calendarViewShown="true"
+                    android:text="Seleccionar Fecha"
                     android:layout_marginBottom="16dp"
-                    android:dateTextAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                    app:icon="@drawable/calendar"
+                    app:iconTint="@android:color/white"
+                    android:textColor="@android:color/white"
+                    app:backgroundTint="@color/black"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
                 <TextView
                     android:layout_width="match_parent"

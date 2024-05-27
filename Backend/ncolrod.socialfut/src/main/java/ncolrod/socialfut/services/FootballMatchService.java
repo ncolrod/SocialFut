@@ -1,6 +1,7 @@
 package ncolrod.socialfut.services;
 
 import com.fasterxml.jackson.databind.deser.DataFormatReaders;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.UniqueConstraint;
 import ncolrod.socialfut.entities.FootballMatch;
 import ncolrod.socialfut.entities.Role;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,6 +165,93 @@ public class FootballMatchService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void updateCheckHome(int matchId, String result) {
+        Optional<FootballMatch> optionalMatch = footballMatchRepository.findById(matchId);
+
+        if (optionalMatch.isPresent()) {
+            FootballMatch match = optionalMatch.get();
+            match.setCheckHome(result);
+            footballMatchRepository.save(match);
+            verifyResults(match);  // Verify after updating checkHome
+        } else {
+            throw new EntityNotFoundException("Match not found");
+        }
+    }
+
+    public void updateCheckAway(int matchId, String result) {
+        Optional<FootballMatch> optionalMatch = footballMatchRepository.findById(matchId);
+
+        if (optionalMatch.isPresent()) {
+            FootballMatch match = optionalMatch.get();
+            match.setCheckAway(result);
+            footballMatchRepository.save(match);
+            verifyResults(match);  // Verify after updating checkAway
+        } else {
+            throw new EntityNotFoundException("Match not found");
+        }
+    }
+
+    public void verifyResults(FootballMatch match) {
+        if (match.getCheckHome() != null && match.getCheckAway() != null) {
+            if (match.getCheckHome().equals(match.getCheckAway())) {
+                match.setResult(match.getCheckHome());
+                match.setFinished(true);
+                footballMatchRepository.save(match);
+            } else {
+                // Manejar el error cuando los resultados no coinciden
+                throw new IllegalArgumentException("Los resultados no coinciden");
+            }
+        }
+    }
+
+    @Transactional
+    public boolean deleteMatch(int matchId, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+        try {
+            Optional<FootballMatch> matchOptional = footballMatchRepository.findById(matchId);
+            if (matchOptional.isPresent()) {
+                FootballMatch match = matchOptional.get();
+                if (match.getCreatorUser().getId() == user.getId()) {
+                    footballMatchRepository.delete(match);
+                    return true;
+                } else {
+                    throw new AccessDeniedException("Unauthorized to delete this match");
+                }
+            } else {
+                throw new EntityNotFoundException("Match not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean updateMatch(int matchId, CreateMatchRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+        try {
+            Optional<FootballMatch> matchOptional = footballMatchRepository.findById(matchId);
+            if (matchOptional.isPresent()) {
+                FootballMatch match = matchOptional.get();
+                if (match.getCreatorUser().getId() == user.getId()) {
+                    match.setHomeTeam(request.getHomeTeam());
+                    match.setLocation(request.getLocation());
+                    match.setDate(request.getDate());
+                    match.setPricePerPerson(request.getPricePerPerson());
+                    footballMatchRepository.save(match);
+                    return true;
+                } else {
+                    throw new SecurityException("Unauthorized to update this match");
+                }
+            } else {
+                throw new EntityNotFoundException("Match not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 

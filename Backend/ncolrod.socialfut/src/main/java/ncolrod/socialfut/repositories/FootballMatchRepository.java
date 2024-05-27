@@ -15,6 +15,11 @@ public interface FootballMatchRepository extends JpaRepository<FootballMatch, In
     @Query("SELECT f FROM FootballMatch f WHERE f.homeTeam.id != :idTeam")
     List<FootballMatch> listMatchToJoin(int idTeam);
 
+    @Query("SELECT f FROM FootballMatch f WHERE f.homeTeam.id = :idTeam")
+    FootballMatch localMatch(int idTeam);
+
+
+
 
 
 }

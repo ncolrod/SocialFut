@@ -1,7 +1,6 @@
 package ncolrod.socialfutv3.api.fragments;
 
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -33,8 +32,8 @@ public class SuccesfullActivity extends AppCompatActivity {
                 replaceFragment(new UserProfileFragment());
             } else if (item.getItemId() == R.id.teamprofile) {
                 replaceFragment(new TeamProfileFragment());
-            } else if (item.getItemId() == R.id.messages){
-                replaceFragment(new MessagesFragment());
+            } else if (item.getItemId() == R.id.mymatch){
+                replaceFragment(new MyMatchFragment());
             } else if (item.getItemId() == R.id.matches) {
                 replaceFragment(new MatchesFragment());
             }
