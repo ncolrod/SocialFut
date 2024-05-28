@@ -20,6 +20,8 @@ import ncolrod.socialfutv3.api.responses.TeamRegisterResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -48,6 +50,13 @@ public interface RetrofitRepository {
     // Peticion que actualiza la poscion del Usuario
     @PUT("user/position")
     Call<User> updatePosition(@Query("position") String position);
+
+    @PUT("users/updateProfile")
+    Call<User> updateUserProfile(@Body User user);
+
+
+    @DELETE("/users/delete")
+    Call<Void> deleteUserProfile(@Query("password") String password);
 
 
     /*

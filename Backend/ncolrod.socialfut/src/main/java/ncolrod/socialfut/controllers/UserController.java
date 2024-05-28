@@ -46,6 +46,39 @@ public class UserController {
         }
     }
 
+    @PutMapping("/updateProfile")
+    public ResponseEntity<User> updateUserProfile(@AuthenticationPrincipal UserDetails userDetails, @RequestBody User updatedUser) {
+        User user = (User) userDetails;
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        try {
+            User savedUser = userService.updateUserProfile(user.getId(), updatedUser);
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUserProfile(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam String password) {
+        User user = (User) userDetails;
+        if (user != null) {
+            boolean success = userService.deleteUserProfile(user, password);
+            if (success) {
+                return ResponseEntity.ok("Perfil eliminado exitosamente.");
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Contraseña incorrecta.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 
 
 }
