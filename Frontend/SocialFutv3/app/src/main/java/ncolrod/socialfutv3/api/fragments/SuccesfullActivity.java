@@ -32,8 +32,8 @@ public class SuccesfullActivity extends AppCompatActivity {
                 replaceFragment(new UserProfileFragment());
             } else if (item.getItemId() == R.id.teamprofile) {
                 replaceFragment(new TeamProfileFragment());
-            } else if (item.getItemId() == R.id.mymatch){
-                replaceFragment(new MyMatchFragment());
+            } else if (item.getItemId() == R.id.create2){
+                replaceFragment(new CreateMatchFragment());
             } else if (item.getItemId() == R.id.matches) {
                 replaceFragment(new MatchesFragment());
             }

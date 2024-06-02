@@ -24,6 +24,7 @@ import ncolrod.socialfutv3.api.models.Team;
 import ncolrod.socialfutv3.api.models.User;
 import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
+import ncolrod.socialfutv3.api.tasks.LoadTeamDataTask;
 import ncolrod.socialfutv3.api.tasks.LoadUserDataTask;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,6 +80,7 @@ public class UserProfileFragment extends Fragment {
 
         // Cargar los datos del usuario y del equipo
         new LoadUserDataTask(mViewModel, retrofitRepository).execute();
+        new LoadTeamDataTask(mViewModel, retrofitRepository).execute();
 
         // Configurar el botón de modificar perfil
         modifyProfileButton.setOnClickListener(v -> {
@@ -98,6 +100,9 @@ public class UserProfileFragment extends Fragment {
             userNameTextView.setText(user.getFirstname() + " " + user.getLastname());
             userLocationTextView.setText(user.getLocation());
             userPosition.setText(user.getPosition());
+            statsAssistsTextView.setText("Asistencias: "+user.getAssists());
+            statsGoalsTextView.setText("Goles: "+user.getGoals());
+            statsMatchesTextView.setText("Partidos Jugados: "+user.getMatchesPlayed());
         }
     }
 

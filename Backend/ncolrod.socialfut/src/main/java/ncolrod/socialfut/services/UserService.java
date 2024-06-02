@@ -1,11 +1,14 @@
 package ncolrod.socialfut.services;
 
+import jakarta.transaction.Transactional;
 import ncolrod.socialfut.entities.User;
 import ncolrod.socialfut.repositories.TeamRepository;
 import ncolrod.socialfut.repositories.UserRepository;
+import ncolrod.socialfut.requests.PlayerStatsUpdateRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -48,6 +51,20 @@ public class UserService {
     }
 
 
-
+    @Transactional
+    public void updatePlayerStats(List<PlayerStatsUpdateRequest> playerStats) {
+        for (PlayerStatsUpdateRequest stats : playerStats) {
+            User player = userRepository.findById(stats.getPlayerId()).orElse(null);
+            if (player != null) {
+                int goals = player.getGoals();
+                player.setGoals(goals + stats.getGoals());
+                int assists = player.getAssists();
+                player.setAssists(assists + stats.getAssists());
+                int partipated = player.getMatchesPlayed();
+                player.setMatchesPlayed(partipated + stats.getParticipated());
+                userRepository.save(player);
+            }
+        }
+    }
 
 }

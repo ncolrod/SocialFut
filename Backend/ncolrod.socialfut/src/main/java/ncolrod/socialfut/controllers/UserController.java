@@ -3,6 +3,7 @@ package ncolrod.socialfut.controllers;
 import lombok.AllArgsConstructor;
 import ncolrod.socialfut.entities.User;
 import ncolrod.socialfut.repositories.UserRepository;
+import ncolrod.socialfut.requests.PlayerStatsUpdateRequest;
 import ncolrod.socialfut.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -77,6 +80,18 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @PostMapping("/updateStats")
+    public ResponseEntity<Void> updatePlayerStats(@RequestBody List<PlayerStatsUpdateRequest> playerStats) {
+        try {
+            userService.updatePlayerStats(playerStats);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
 

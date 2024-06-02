@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -167,44 +168,6 @@ public class FootballMatchService {
         return false;
     }
 
-    public void updateCheckHome(int matchId, String result) {
-        Optional<FootballMatch> optionalMatch = footballMatchRepository.findById(matchId);
-
-        if (optionalMatch.isPresent()) {
-            FootballMatch match = optionalMatch.get();
-            match.setCheckHome(result);
-            footballMatchRepository.save(match);
-            verifyResults(match);  // Verify after updating checkHome
-        } else {
-            throw new EntityNotFoundException("Match not found");
-        }
-    }
-
-    public void updateCheckAway(int matchId, String result) {
-        Optional<FootballMatch> optionalMatch = footballMatchRepository.findById(matchId);
-
-        if (optionalMatch.isPresent()) {
-            FootballMatch match = optionalMatch.get();
-            match.setCheckAway(result);
-            footballMatchRepository.save(match);
-            verifyResults(match);  // Verify after updating checkAway
-        } else {
-            throw new EntityNotFoundException("Match not found");
-        }
-    }
-
-    public void verifyResults(FootballMatch match) {
-        if (match.getCheckHome() != null && match.getCheckAway() != null) {
-            if (match.getCheckHome().equals(match.getCheckAway())) {
-                match.setResult(match.getCheckHome());
-                match.setFinished(true);
-                footballMatchRepository.save(match);
-            } else {
-                // Manejar el error cuando los resultados no coinciden
-                throw new IllegalArgumentException("Los resultados no coinciden");
-            }
-        }
-    }
 
     @Transactional
     public boolean deleteMatch(int matchId, @AuthenticationPrincipal UserDetails userDetails) {
@@ -214,6 +177,12 @@ public class FootballMatchService {
             if (matchOptional.isPresent()) {
                 FootballMatch match = matchOptional.get();
                 if (match.getCreatorUser().getId() == user.getId()) {
+                    Team awayTeam = match.getAwayTeam();
+                    Team localTeam = match.getHomeTeam();
+                    awayTeam.setAvailable(false);
+                    localTeam.setAvailable(false);
+                    teamRepository.save(awayTeam);
+                    teamRepository.save(localTeam);
                     footballMatchRepository.delete(match);
                     return true;
                 } else {
@@ -249,6 +218,65 @@ public class FootballMatchService {
         // Guardar los cambios
         footballMatchRepository.save(match);
         return true;
+    }
+
+    public boolean updateMatchResult(int matchId, String result, User user) {
+        Optional<FootballMatch> matchOptional = footballMatchRepository.findById(matchId);
+        if (matchOptional.isPresent()) {
+            FootballMatch match = matchOptional.get();
+            if (match.getCreatorUser().equals(user)) {
+                match.setResult(result);
+                footballMatchRepository.save(match);
+                updateTeamStatistics(match, result);
+                return true;
+            }
+        }
+        return false;
+    }
+    private void updateTeamStatistics(FootballMatch match, String result) {
+        String[] scores = result.split("-");
+        int homeTeamScore = Integer.parseInt(scores[0]);
+        int awayTeamScore = Integer.parseInt(scores[1]);
+
+        Team homeTeam = match.getHomeTeam();
+        Team awayTeam = match.getAwayTeam();
+
+        // Increment matches played for both teams
+        homeTeam.setMatchesPlayed(homeTeam.getMatchesPlayed() + 1);
+        awayTeam.setMatchesPlayed(awayTeam.getMatchesPlayed() + 1);
+
+        if (homeTeamScore > awayTeamScore) {
+            // Home team wins
+            homeTeam.setMatchesWon(homeTeam.getMatchesWon() + 1);
+            awayTeam.setLostMatches(awayTeam.getLostMatches() + 1);
+        } else if (homeTeamScore < awayTeamScore) {
+            // Away team wins
+            awayTeam.setMatchesWon(awayTeam.getMatchesWon() + 1);
+            homeTeam.setLostMatches(homeTeam.getLostMatches() + 1);
+        } else {
+            // Tie
+            homeTeam.setTiedMatches(homeTeam.getTiedMatches() + 1);
+            awayTeam.setTiedMatches(awayTeam.getTiedMatches() + 1);
+        }
+
+        teamRepository.save(homeTeam);
+        teamRepository.save(awayTeam);
+    }
+
+    public List<User> getHomeTeamPlayers(int matchId) {
+        FootballMatch match = footballMatchRepository.findById(matchId).orElse(null);
+        if (match == null || match.getHomeTeam() == null) {
+            return null;
+        }
+        return match.getHomeTeam().getUsers();
+    }
+
+    public List<User> getAwayTeamPlayers(int matchId) {
+        FootballMatch match = footballMatchRepository.findById(matchId).orElse(null);
+        if (match == null || match.getAwayTeam() == null) {
+            return null;
+        }
+        return match.getAwayTeam().getUsers();
     }
 
 

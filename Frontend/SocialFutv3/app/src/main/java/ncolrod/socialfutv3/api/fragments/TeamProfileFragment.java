@@ -1,21 +1,27 @@
 package ncolrod.socialfutv3.api.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
-
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.adapter.PlayerAdapter;
+import ncolrod.socialfutv3.api.models.Role;
+import ncolrod.socialfutv3.api.models.Team;
+import ncolrod.socialfutv3.api.models.User;
 import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
 import ncolrod.socialfutv3.api.tasks.LoadPlayersTask;
 import ncolrod.socialfutv3.api.tasks.LoadTeamDataTask;
@@ -30,7 +36,7 @@ public class TeamProfileFragment extends Fragment {
     private RecyclerView recyclerViewPlayers;
     private PlayerAdapter playerAdapter;
     private RetrofitRepository retrofitRepository;
-
+    private TextView tvPartidosGanados, tvPartidosPerdidos, tvPartidosEmpatados;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,7 +53,11 @@ public class TeamProfileFragment extends Fragment {
         teamLocationTextView = view.findViewById(R.id.teamLocation);
         teamStadiumTextView = view.findViewById(R.id.teamStadium);
         teamCaptainTextView = view.findViewById(R.id.teamCaptain);
+        tvPartidosGanados = view.findViewById(R.id.statsWon);
+        tvPartidosPerdidos = view.findViewById(R.id.statsLost);
+        tvPartidosEmpatados = view.findViewById(R.id.statsTie);
         recyclerViewPlayers = view.findViewById(R.id.teamPlayersRecyclerView);
+        LinearLayout llTeam = view.findViewById(R.id.llteam);
 
         recyclerViewPlayers.setLayoutManager(new LinearLayoutManager(getContext()));
         playerAdapter = new PlayerAdapter(new ArrayList<>());
@@ -58,8 +68,10 @@ public class TeamProfileFragment extends Fragment {
                 teamNameTextView.setText(team.getName());
                 teamLocationTextView.setText(team.getLocation());
                 teamStadiumTextView.setText(team.getStadium());
+                tvPartidosGanados.setText("Partidos ganados: "+team.getMatchesWon());
+                tvPartidosPerdidos.setText("Partidos perdidos: "+team.getLostMatches());
+                tvPartidosEmpatados.setText("Partidos empatados: "+team.getTiedMatches());
                 //teamCaptainTextView.setText(team.getCaptain().getFirstname() + " " + team.getCaptain().getLastname());
-
                 new LoadPlayersTask(mViewModel, retrofitRepository).execute();
             }
         });
@@ -71,5 +83,33 @@ public class TeamProfileFragment extends Fragment {
         });
 
         new LoadTeamDataTask(mViewModel, retrofitRepository).execute();
+
+        // Set up click listener to show edit dialog
+        llTeam.setOnClickListener(v -> showEditTeamDialog());
+    }
+
+    private void showEditTeamDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Editar Equipo");
+
+        User currentUser = mViewModel.getUserLiveData().getValue();
+        Team currentTeam = mViewModel.getTeamLiveData().getValue();
+
+        if (currentUser != null && currentTeam != null && currentUser.getRole() == Role.ADMIN) {
+            builder.setMessage("¿Quieres modificar el equipo?")
+                    .setPositiveButton("Sí", (dialog, which) -> {
+                        EditTeamProfileFragment editTeamProfileFragment = new EditTeamProfileFragment();
+                        getParentFragmentManager().beginTransaction()
+                                .replace(R.id.frame_layout, editTeamProfileFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    })
+                    .setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+        } else {
+            builder.setMessage("No tienes permisos para modificar el equipo.")
+                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+        }
+
+        builder.show();
     }
 }

@@ -9,8 +9,8 @@
         />
 
     <item
-        android:id="@+id/mymatch"
-        android:title="My Match"
+        android:id="@+id/create2"
+        android:title="Create"
         android:icon="@drawable/mymatch"
         android:iconTint="@color/black"
 

@@ -19,6 +19,7 @@
         android:layout_marginBottom="16dp">
 
         <LinearLayout
+            android:id="@+id/llteam"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -223,5 +224,6 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

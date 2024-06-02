@@ -9,6 +9,7 @@ import ncolrod.socialfut.requests.TeamRegisterRequest;
 import ncolrod.socialfut.responses.TeamJoinResponse;
 import ncolrod.socialfut.responses.TeamRegisterResponse;
 import ncolrod.socialfut.services.TeamService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -110,6 +111,21 @@ public class TeamController {
             } else {
                 // El usuario no tiene un equipo asociado
                 return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Team> updateTeam(@RequestBody Team updatedTeam, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+        try {
+            if (teamService.updateTeam(updatedTeam, user)) {
+                return ResponseEntity.ok(updatedTeam);
+            } else {
+                return ResponseEntity.badRequest().build();
             }
         } catch (Exception e) {
             e.printStackTrace();

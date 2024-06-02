@@ -20,6 +20,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.Team;
@@ -117,13 +118,11 @@ public class CreateMatchFragment extends Fragment {
             @Override
             public void onResponse(Call<CreateMatchResponse> call, Response<CreateMatchResponse> response) {
                 if (response.isSuccessful()) {
-                    MyMatchFragment myMatchFragment = MyMatchFragment.newInstance(response.body().getMatchId());
-                    getParentFragmentManager().beginTransaction()
-                            .replace(R.id.mymatch, myMatchFragment)
-                            .addToBackStack(null)
-                            .commit();
+                    Toast.makeText(getContext(), "Match created successfully", Toast.LENGTH_SHORT).show();
                     Log.i("CreateMatchFragment", "Match created successfully: " + response.body().toString());
+
                 } else {
+                    Toast.makeText(getContext(), "Failed to create match", Toast.LENGTH_SHORT).show();
                     Log.e("CreateMatchFragment", "Failed to create match: " + response.code());
                 }
             }

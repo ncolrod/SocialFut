@@ -15,12 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.Match;
+import ncolrod.socialfutv3.api.models.User;
 import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,6 +40,8 @@ public class MatchDetailFragment extends Fragment {
     private EditText homeTeamScoreEditText;
     private EditText awayTeamScoreEditText;
     private Button submitScoreButton;
+    private User currentUser; // Current authenticated user
+    private boolean isCreator = false;
 
     public static MatchDetailFragment newInstance(int matchId) {
         MatchDetailFragment fragment = new MatchDetailFragment();
@@ -59,6 +64,9 @@ public class MatchDetailFragment extends Fragment {
 
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
+        // Assuming the currentUser is set somewhere in your app
+        currentUser = sharedViewModel.getUserLiveData().getValue();
+
         if (getArguments() != null) {
             matchId = getArguments().getInt(ARG_MATCH_ID);
             loadMatchDetails(matchId);
@@ -77,6 +85,10 @@ public class MatchDetailFragment extends Fragment {
                             "\nHome Team: " + match.getHomeTeam().getName() +
                             "\nAway Team: " + match.getAwayTeam().getName() +
                             "\nCreated: " + match.isCreated());
+                    isCreator = match.getCreatorUser().getId() == currentUser.getId();
+                    if (isCreator) {
+                        enableScoreSubmission();
+                    }
                     startCountdown(match);
                     break;
                 }
@@ -108,6 +120,9 @@ public class MatchDetailFragment extends Fragment {
         } else {
             countdownStartTextView.setText("Match ended.");
             countdownEndTextView.setText("");
+            if (isCreator) {
+                enableScoreSubmission();
+            }
         }
     }
 
@@ -121,8 +136,17 @@ public class MatchDetailFragment extends Fragment {
             @Override
             public void onFinish() {
                 countdownEndTextView.setText("Match ended.");
+                if (isCreator) {
+                    enableScoreSubmission();
+                }
             }
         }.start();
+    }
+
+    private void enableScoreSubmission() {
+        homeTeamScoreEditText.setEnabled(true);
+        awayTeamScoreEditText.setEnabled(true);
+        submitScoreButton.setEnabled(true);
     }
 
     private String formatMillis(long millis) {
@@ -135,29 +159,21 @@ public class MatchDetailFragment extends Fragment {
     private void submitScore() {
         String homeTeamScore = homeTeamScoreEditText.getText().toString().trim();
         String awayTeamScore = awayTeamScoreEditText.getText().toString().trim();
-        String score = homeTeamScore+"-"+awayTeamScore;
+        String score = homeTeamScore + "-" + awayTeamScore;
 
-        if (homeTeamScore.isEmpty() && awayTeamScore.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter a score for either team", Toast.LENGTH_SHORT).show();
+        if (homeTeamScore.isEmpty() || awayTeamScore.isEmpty()) {
+            Toast.makeText(getContext(), "Please enter a score for both teams", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!homeTeamScore.isEmpty() && !awayTeamScore.isEmpty()) {
-            submitScore(matchId, score, true);
-        } else {
-            Toast.makeText(getContext(), "Please enter a valid reult", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void submitScore(int matchId, String score, boolean isHome) {
-        Call<Void> call;
-        call = BackendComunication.getRetrofitRepository().updateAwayResult(matchId, score);
+        Call<Void> call = BackendComunication.getRetrofitRepository().updateMatchResult(matchId, score);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.i("MatchDetailFragment", "Score submitted successfully");
                     Toast.makeText(getContext(), "Score submitted successfully", Toast.LENGTH_SHORT).show();
+                    navigateToPlayerStatsFragment();
                 } else {
                     Log.e("MatchDetailFragment", "Failed to submit score: " + response.code());
                     Toast.makeText(getContext(), "Failed to submit score", Toast.LENGTH_SHORT).show();
@@ -170,5 +186,14 @@ public class MatchDetailFragment extends Fragment {
                 Toast.makeText(getContext(), "Error submitting score", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void navigateToPlayerStatsFragment() {
+        InsertPlayerStatsFragment fragment = InsertPlayerStatsFragment.newInstance(matchId);
+
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

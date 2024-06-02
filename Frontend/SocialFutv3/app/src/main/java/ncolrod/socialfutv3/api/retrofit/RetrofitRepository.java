@@ -8,6 +8,7 @@ import ncolrod.socialfutv3.api.models.User;
 import ncolrod.socialfutv3.api.requests.AuthenticationRequest;
 import ncolrod.socialfutv3.api.requests.CreateMatchRequest;
 import ncolrod.socialfutv3.api.requests.JoinMatchRequest;
+import ncolrod.socialfutv3.api.requests.PlayerStatsUpdateRequest;
 import ncolrod.socialfutv3.api.requests.RegisterRequest;
 import ncolrod.socialfutv3.api.requests.TeamJoinRequest;
 import ncolrod.socialfutv3.api.requests.TeamRegisterRequest;
@@ -20,8 +21,6 @@ import ncolrod.socialfutv3.api.responses.TeamRegisterResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -58,6 +57,10 @@ public interface RetrofitRepository {
     @DELETE("/users/delete")
     Call<Void> deleteUserProfile(@Query("password") String password);
 
+    @POST("/users/updateStats")
+    @Headers("Content-Type: application/json")
+    Call<Void> updatePlayerStats(@Body List<PlayerStatsUpdateRequest> playerStats);
+
 
     /*
     EQUIPO -> Metodos para buscar y registrar equipos.
@@ -76,6 +79,10 @@ public interface RetrofitRepository {
 
     @GET("teams/players")
     Call<List<User>> getPlayers();
+
+    @PUT("teams/update")
+    Call<Team> updateTeam(@Body Team updatedTeam);
+
 
     /*
     MATCH -> Métodos para crear, unirse y finalizar partidos
@@ -97,16 +104,22 @@ public interface RetrofitRepository {
 
     @POST("matches/cancel/{matchId}")
     Call<Boolean> cancelMatch(@Path("matchId") int matchId);
-    @POST("matches/{id}/result/home")
-    Call<Void> updateHomeResult(@Path("id") int matchId, @Query("result") String result);
-
-    @POST("matches/{id}/result/away")
-    Call<Void> updateAwayResult(@Path("id") int matchId, @Query("result") String result);
 
     @DELETE("/matches/{matchId}")
     Call<GenericResponse> deleteMatch(@Path("matchId") int matchId);
     @PUT("matches/{id}")
     Call<GenericResponse> updateMatch(@Path("id") int id, @Body CreateMatchRequest request);
+
+    @PUT("matches/result/{matchId}")
+    @Headers("Content-Type: application/json")
+    Call<Void> updateMatchResult(@Path("matchId") int matchId, @Query("result") String result);
+
+    @GET("matches/{matchId}/homeTeamPlayers")
+    Call<List<User>> getHomeTeamPlayers(@Path("matchId") int matchId);
+    @GET("matches/{matchId}/awayTeamPlayers")
+    Call<List<User>> getAwayTeamPlayers(@Path("matchId") int matchId);
+
+
 
 
 

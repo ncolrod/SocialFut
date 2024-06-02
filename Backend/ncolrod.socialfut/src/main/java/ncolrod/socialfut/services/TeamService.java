@@ -97,6 +97,32 @@ public class TeamService {
         return teamRepository.findPlayersByTeamId(teamId);
     }
 
+    public boolean updateTeam(Team updatedTeam, User user) {
+        int teamId = user.getTeam().getId();
+        Optional<Team> teamOptional = teamRepository.findById(teamId);
+        if (teamOptional.isPresent()) {
+            Team team = teamOptional.get();
+            System.out.println(":::UpdateTeamTask::: --> Equipo encontrado: "+team.getName()+ " con id "+team.getId());
+            if (user.getRole() == Role.ADMIN) {
+                System.out.println(":::UpdateTeamTask::: --> El usuario "+user.getEmail()+" tiene permisos.");
+                team.setName(updatedTeam.getName());
+                team.setLocation(updatedTeam.getLocation());
+                team.setStadium(updatedTeam.getStadium());
+                team.setDescription(updatedTeam.getDescription());
+                team.setTeam_color(updatedTeam.getTeam_color());
+                teamRepository.save(team);
+                return true;
+            } else {
+                System.out.println(":::UpdateTeamTask::: --> El usuario "+user.getEmail()+" NO tiene permisos.");
+                return false;
+            }
+        } else {
+            System.out.println(":::UpdateTeamTask::: --> Equipo NO encontrado.");
+            return false;
+        }
+    }
+
+
 
 }
 

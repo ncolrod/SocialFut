@@ -20,11 +20,14 @@ public class User implements Serializable {
     private String location;
     private String position;
     private String email;
-
     private Role role;
 
-    public User() {
-    }
+    //stats
+    private int matchesPlayed;
+    private int goals;
+    private int assists;
+
+    private boolean participated;
 
     public User(int id, String firstname, String lastname, String telephone, String location, String position, String email, Role role) {
         this.id = id;
@@ -45,6 +48,38 @@ public class User implements Serializable {
         this.location = location;
         this.position = position;
         this.email = email;
+
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public int getMatchesPlayed() {
+        return matchesPlayed;
+    }
+
+    public void setMatchesPlayed(int matchesPlayed) {
+        this.matchesPlayed = matchesPlayed;
+    }
+
+    public int getGoals() {
+        return goals;
+    }
+
+    public void setGoals(int goals) {
+        this.goals = goals;
+    }
+
+    public int getAssists() {
+        return assists;
+    }
+
+    public void setAssists(int assists) {
+        this.assists = assists;
+    }
+
+    public User() {
     }
 
     public Role getRole() {
@@ -105,5 +140,13 @@ public class User implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public boolean isParticipated() {
+        return participated;
+    }
+
+    public void setParticipated(boolean participated) {
+        this.participated = participated;
     }
 }

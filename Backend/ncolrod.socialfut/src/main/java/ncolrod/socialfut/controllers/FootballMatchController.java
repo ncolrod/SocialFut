@@ -78,29 +78,6 @@ public class FootballMatchController {
         }
     }
 
-    @PostMapping("/{id}/result/home")
-    public ResponseEntity<?> updateHomeResult(@PathVariable int id, @RequestParam String result) {
-        try {
-            footballMatchService.updateCheckHome(id, result);
-            return ResponseEntity.ok("Home result updated successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/{id}/result/away")
-    public ResponseEntity<?> updateAwayResult(@PathVariable int id, @RequestParam String result) {
-        try {
-            footballMatchService.updateCheckAway(id, result);
-            return ResponseEntity.ok("Away result updated successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
 
     @DeleteMapping("/{matchId}")
     public ResponseEntity<GenericResponse> deleteMatch(@PathVariable int matchId, @AuthenticationPrincipal UserDetails userDetails) {
@@ -120,6 +97,40 @@ public class FootballMatchController {
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse(false, "Failed to update match"));
         }
+    }
+
+    @PutMapping("/result/{matchId}")
+    public ResponseEntity<String> updateMatchResult(@PathVariable int matchId, @RequestParam String result, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+        try {
+            boolean isUpdated = footballMatchService.updateMatchResult(matchId, result, user);
+            if (isUpdated) {
+                return ResponseEntity.ok("Match result updated successfully");
+            } else {
+                return ResponseEntity.status(403).body("Permission denied or match not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error updating match result: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{matchId}/homeTeamPlayers")
+    public ResponseEntity<List<User>> getHomeTeamPlayers(@PathVariable int matchId) {
+        List<User> players = footballMatchService.getHomeTeamPlayers(matchId);
+        if (players == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(players);
+    }
+
+    @GetMapping("/{matchId}/awayTeamPlayers")
+    public ResponseEntity<List<User>> getAwayTeamPlayers(@PathVariable int matchId) {
+        List<User> players = footballMatchService.getAwayTeamPlayers(matchId);
+        if (players == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(players);
     }
 
 

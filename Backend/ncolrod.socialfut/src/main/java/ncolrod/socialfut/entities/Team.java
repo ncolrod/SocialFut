@@ -28,6 +28,11 @@ public class Team {
     private String team_color;
     private String description;
     private boolean isAvailable;
+    //Stats
+    private int matchesPlayed;
+    private int matchesWon;
+    private int lostMatches;
+    private int tiedMatches;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private List<User> users;
