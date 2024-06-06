@@ -43,6 +43,7 @@ public class UserProfileFragment extends Fragment {
     private RetrofitRepository retrofitRepository;
     private Button modifyProfileButton;
     private Button deleteProfileButton;
+    private User currentUser;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +85,7 @@ public class UserProfileFragment extends Fragment {
 
         // Configurar el botón de modificar perfil
         modifyProfileButton.setOnClickListener(v -> {
-            EditUserProfileFragment editUserProfileFragment = new EditUserProfileFragment();
+            EditUserProfileFragment editUserProfileFragment = EditUserProfileFragment.newInstance(currentUser);
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.frame_layout, editUserProfileFragment)
                     .addToBackStack(null)
@@ -103,6 +104,7 @@ public class UserProfileFragment extends Fragment {
             statsAssistsTextView.setText("Asistencias: "+user.getAssists());
             statsGoalsTextView.setText("Goles: "+user.getGoals());
             statsMatchesTextView.setText("Partidos Jugados: "+user.getMatchesPlayed());
+            currentUser = user; // Actualizar currentUser con el usuario actualizado
         }
     }
 
@@ -163,3 +165,4 @@ public class UserProfileFragment extends Fragment {
         });
     }
 }
+

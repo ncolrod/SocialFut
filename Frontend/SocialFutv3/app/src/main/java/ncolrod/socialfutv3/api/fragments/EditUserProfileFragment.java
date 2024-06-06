@@ -1,9 +1,6 @@
 package ncolrod.socialfutv3.api.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import java.io.IOException;
 
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.User;

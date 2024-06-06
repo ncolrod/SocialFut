@@ -102,6 +102,8 @@
             android:textColorHighlight="@color/white"
             android:textColorLink="@color/white"
             android:backgroundTint="@color/white"
+            android:popupBackground="@color/white"
+            android:entries="@array/positions_array"
             />
 
         <Button
