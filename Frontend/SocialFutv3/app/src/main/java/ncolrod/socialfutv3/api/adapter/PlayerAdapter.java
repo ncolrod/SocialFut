@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import ncolrod.socialfutv3.R;
+import ncolrod.socialfutv3.api.models.Role;
 import ncolrod.socialfutv3.api.models.User;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder> {
@@ -30,9 +31,16 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
     @Override
     public void onBindViewHolder(@NonNull PlayerViewHolder holder, int position) {
         User player = players.get(position);
-        holder.playerNameTextView.setText(getFullName(player));
+        String fullName = getFullName(player);
+
+        if (player.getRole() == Role.ADMIN) {
+            fullName += " (Captain)";
+        }
+
+        holder.playerNameTextView.setText(fullName);
         holder.playerPositionTextView.setText(player.getPosition() != null ? player.getPosition() : "Position not specified");
     }
+
 
     @Override
     public int getItemCount() {

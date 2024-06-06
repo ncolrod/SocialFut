@@ -58,7 +58,7 @@ public class TeamProfileFragment extends Fragment {
         teamNameTextView = view.findViewById(R.id.teamName);
         teamLocationTextView = view.findViewById(R.id.teamLocation);
         teamStadiumTextView = view.findViewById(R.id.teamStadium);
-        teamCaptainTextView = view.findViewById(R.id.teamCaptain);
+        //teamCaptainTextView = view.findViewById(R.id.teamCaptain);
         tvPartidosGanados = view.findViewById(R.id.statsWon);
         tvPartidosPerdidos = view.findViewById(R.id.statsLost);
         tvPartidosEmpatados = view.findViewById(R.id.statsTie);
