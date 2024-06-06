@@ -126,4 +126,17 @@
         app:strokeColor="#FFFFFF"
         android:backgroundTint="@color/white"/>
 
+    <Button
+        android:id="@+id/buttonEditCaptains"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Editar Capitanes"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonSave"
+        android:backgroundTint="#9C27B0"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

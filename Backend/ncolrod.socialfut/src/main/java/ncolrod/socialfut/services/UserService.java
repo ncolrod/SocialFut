@@ -1,6 +1,7 @@
 package ncolrod.socialfut.services;
 
 import jakarta.transaction.Transactional;
+import ncolrod.socialfut.entities.Role;
 import ncolrod.socialfut.entities.User;
 import ncolrod.socialfut.repositories.TeamRepository;
 import ncolrod.socialfut.repositories.UserRepository;
@@ -65,6 +66,18 @@ public class UserService {
             }
         }
     }
+
+    public boolean updateRole(int userId, Role newRole, User admin) {
+        if (admin.getRole() != Role.ADMIN) {
+            throw new RuntimeException("Acceso denegado. No tienes permisos para cambiar roles.");
+        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        user.setRole(newRole);
+        userRepository.save(user);
+        return true;
+    }
+
+
 
 
 }

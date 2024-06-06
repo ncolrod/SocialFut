@@ -98,12 +98,13 @@ public class TeamProfileFragment extends Fragment {
         builder.setTitle("Editar Equipo");
 
         User currentUser = mViewModel.getUserLiveData().getValue();
-        Team currentTeam = mViewModel.getTeamLiveData().getValue();
+        Team currentTeam = mViewModel.getTeamLiveData().getValue(); // Asegúrate de que esto no sea nulo
 
         if (currentUser != null && currentTeam != null && currentUser.getRole() == Role.ADMIN) {
             builder.setMessage("¿Quieres modificar el equipo?")
                     .setPositiveButton("Sí", (dialog, which) -> {
-                        EditTeamProfileFragment editTeamProfileFragment = new EditTeamProfileFragment();
+                        // Pasa el equipo actual al fragmento de edición
+                        EditTeamProfileFragment editTeamProfileFragment = EditTeamProfileFragment.newInstance(currentTeam);
                         getParentFragmentManager().beginTransaction()
                                 .replace(R.id.frame_layout, editTeamProfileFragment)
                                 .addToBackStack(null)

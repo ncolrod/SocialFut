@@ -1,6 +1,7 @@
 package ncolrod.socialfut.controllers;
 
 import lombok.AllArgsConstructor;
+import ncolrod.socialfut.entities.Role;
 import ncolrod.socialfut.entities.User;
 import ncolrod.socialfut.repositories.UserRepository;
 import ncolrod.socialfut.requests.PlayerStatsUpdateRequest;
@@ -93,6 +94,31 @@ public class UserController {
         }
 
     }
+
+    @PutMapping("/updateRole")
+    public ResponseEntity<String> updateRole(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam int userId,
+            @RequestParam String role) {
+        User admin = (User) userDetails;
+        if (admin.getRole() != Role.ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado para cambiar roles.");
+        }
+        try {
+            Role newRole = Role.valueOf(role.toUpperCase());
+            boolean success = userService.updateRole(userId, newRole, admin);
+            if (success) {
+                return ResponseEntity.ok("El rol del usuario ha sido actualizado exitosamente.");
+            } else {
+                return ResponseEntity.badRequest().body("Error al actualizar el rol del usuario.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Rol inválido.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en el servidor.");
+        }
+    }
+
 
 
 

@@ -12,6 +12,7 @@ import ncolrod.socialfutv3.api.requests.PlayerStatsUpdateRequest;
 import ncolrod.socialfutv3.api.requests.RegisterRequest;
 import ncolrod.socialfutv3.api.requests.TeamJoinRequest;
 import ncolrod.socialfutv3.api.requests.TeamRegisterRequest;
+import ncolrod.socialfutv3.api.requests.UpdateRoleRequest;
 import ncolrod.socialfutv3.api.responses.AuthenticationRespose;
 import ncolrod.socialfutv3.api.responses.CreateMatchResponse;
 import ncolrod.socialfutv3.api.responses.GenericResponse;
@@ -61,6 +62,8 @@ public interface RetrofitRepository {
     @Headers("Content-Type: application/json")
     Call<Void> updatePlayerStats(@Body List<PlayerStatsUpdateRequest> playerStats);
 
+    @PUT("users/updateRole")
+    Call<String> updateRole(@Query("userId") int userId, @Query("role") String role);
 
     /*
     EQUIPO -> Metodos para buscar y registrar equipos.

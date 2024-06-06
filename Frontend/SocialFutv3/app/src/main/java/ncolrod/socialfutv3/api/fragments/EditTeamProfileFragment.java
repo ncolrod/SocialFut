@@ -1,5 +1,6 @@
 package ncolrod.socialfutv3.api.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +15,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import ncolrod.socialfutv3.R;
+import ncolrod.socialfutv3.api.models.Role;
 import ncolrod.socialfutv3.api.models.Team;
+import ncolrod.socialfutv3.api.models.User;
+import ncolrod.socialfutv3.api.requests.UpdateRoleRequest;
 import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
+import ncolrod.socialfutv3.api.tasks.LoadPlayersTask;
 import ncolrod.socialfutv3.api.tasks.UpdateTeamTask;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,9 +34,12 @@ import retrofit2.Response;
 
 public class EditTeamProfileFragment extends Fragment {
     private EditText nameEditText, locationEditText, stadiumEditText, descriptionEditText, teamColorEditText;
-    private Button saveButton;
+    private Button saveButton, editCaptainsButton;
     private SharedViewModel sharedViewModel;
     private RetrofitRepository retrofitRepository;
+
+    private User selectedCaptain;
+
 
     public static EditTeamProfileFragment newInstance(Team team) {
         EditTeamProfileFragment fragment = new EditTeamProfileFragment();
@@ -61,6 +73,7 @@ public class EditTeamProfileFragment extends Fragment {
         descriptionEditText = view.findViewById(R.id.editTextDescription);
         teamColorEditText = view.findViewById(R.id.editTextTeamColor);
         saveButton = view.findViewById(R.id.buttonSave);
+        editCaptainsButton = view.findViewById(R.id.buttonEditCaptains);
 
         if (getArguments() != null) {
             Team team = (Team) getArguments().getSerializable("team");
@@ -83,7 +96,66 @@ public class EditTeamProfileFragment extends Fragment {
 
             updateTeamProfile(team);
         });
+
+        editCaptainsButton.setOnClickListener(v -> {
+            showEditCaptainsDialog();
+        });
+
     }
+
+    private void showEditCaptainsDialog() {
+        new LoadPlayersTask(sharedViewModel, retrofitRepository).execute();
+        sharedViewModel.getPlayersLiveData().observe(getViewLifecycleOwner(), players -> {
+            List<String> playerNames = players.stream()
+                    .map(player -> player.getFirstname() + " " + player.getLastname() + " (" + player.getRole() + ")")
+                    .collect(Collectors.toList());
+            CharSequence[] playerNamesArray = playerNames.toArray(new CharSequence[0]);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("Seleccionar Capitán");
+            builder.setSingleChoiceItems(playerNamesArray, -1, (dialogInterface, i) -> {
+                // Guarda la selección
+                selectedCaptain = players.get(i);
+            });
+            builder.setPositiveButton("Promover a Capitán", (dialog, which) -> {
+                if (selectedCaptain != null) {
+                    updateRole(selectedCaptain, "ADMIN");
+                }
+            });
+            builder.setNegativeButton("Demote to Player", (dialog, which) -> {
+                if (selectedCaptain != null) {
+                    updateRole(selectedCaptain, "USER");
+                }
+            });
+            builder.setNeutralButton("Cancelar", (dialog, which) -> dialog.dismiss());
+            builder.show();
+        });
+    }
+
+
+
+    private void updateRole(User user, String role) {
+        Log.i(":::UpdateRole:::", "Updating role for user ID: " + user.getId() + " to " + role);
+        retrofitRepository.updateRole(user.getId(), role).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Rol actualizado correctamente a " + role, Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e(":::UpdateRole:::", "Failed to update role: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e(":::UpdateRole:::", "Network error while updating role", t);
+            }
+        });
+    }
+
+
+
+
 
     private void updateTeamProfile(Team updatedTeam) {
         Call<Team> call = retrofitRepository.updateTeam(updatedTeam);
