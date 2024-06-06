@@ -25,6 +25,9 @@ import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.Match;
 import ncolrod.socialfutv3.api.models.User;
 import ncolrod.socialfutv3.api.retrofit.BackendComunication;
+import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
+import ncolrod.socialfutv3.api.tasks.LoadMatchesDataTask;
+import ncolrod.socialfutv3.api.tasks.LoadMatchesPlayedTask;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,6 +45,8 @@ public class MatchDetailFragment extends Fragment {
     private Button submitScoreButton;
     private User currentUser; // Current authenticated user
     private boolean isCreator = false;
+
+    private RetrofitRepository retrofitRepository;
 
     public static MatchDetailFragment newInstance(int matchId) {
         MatchDetailFragment fragment = new MatchDetailFragment();
@@ -173,6 +178,8 @@ public class MatchDetailFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Log.i("MatchDetailFragment", "Score submitted successfully");
                     Toast.makeText(getContext(), "Score submitted successfully", Toast.LENGTH_SHORT).show();
+                    new LoadMatchesDataTask(sharedViewModel, retrofitRepository).execute();
+                    new LoadMatchesPlayedTask(sharedViewModel, retrofitRepository).execute();
                     navigateToPlayerStatsFragment();
                 } else {
                     Log.e("MatchDetailFragment", "Failed to submit score: " + response.code());

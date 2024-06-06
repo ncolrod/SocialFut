@@ -1,7 +1,6 @@
 package ncolrod.socialfutv3.api.fragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import ncolrod.socialfutv3.R;
@@ -39,7 +37,7 @@ import ncolrod.socialfutv3.api.tasks.LoadTeamDataTask;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class MatchesFragment extends Fragment {
+public class SearchMatchesFragment extends Fragment {
     private RecyclerView matchesRecyclerView;
     private MatchesAdapter matchesAdapter;
     private SharedViewModel sharedViewModel;
@@ -73,7 +71,7 @@ public class MatchesFragment extends Fragment {
                 matchesAdapter.setOnItemClickListener(new MatchesAdapter.OnItemClickListener() {
                     @Override
                     public void onCardClick(int position) {
-                        // Implementar la lógica cuando se haga clic en la tarjeta
+                        showTeamInfoDialog(matchesList.get(position));
                     }
 
                     @Override
@@ -115,11 +113,17 @@ public class MatchesFragment extends Fragment {
 
                     @Override
                     public void onInfoButtonClick(int position) {
-                        MatchDetailFragment matchDetailsFragment = MatchDetailFragment.newInstance(matchesList.get(position).getId());
-                        getParentFragmentManager().beginTransaction()
-                                .replace(R.id.frame_layout, matchDetailsFragment)
-                                .addToBackStack(null)
-                                .commit();
+                        Match match = matchesList.get(position);
+                        Team awayTeam = match.getAwayTeam();
+                        if (awayTeam == null || awayTeam.getId() != currentTeam.getId()) {
+                            Toast.makeText(getContext(), "No tienes permisos, únete primero", Toast.LENGTH_SHORT).show();
+                        } else {
+                            MatchDetailFragment matchDetailsFragment = MatchDetailFragment.newInstance(matchesList.get(position).getId());
+                            getParentFragmentManager().beginTransaction()
+                                    .replace(R.id.frame_layout, matchDetailsFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
                     }
 
                     @Override
@@ -167,11 +171,38 @@ public class MatchesFragment extends Fragment {
                         }
                     }
 
+                    @Override
+                    public void onProfileButtonClick(int position) {
+                        showTeamInfoDialog(matchesList.get(position));
+                    }
+
                 });
             }
         });
 
         return view;
+    }
+
+
+    private void showTeamInfoDialog(Match match) {
+        Team homeTeam = match.getHomeTeam();
+        String teamInfo = (homeTeam != null ? homeTeam.getName() : "Desconocido") + "\n" +
+                "Partidos ganados: " + (homeTeam != null ? homeTeam.getMatchesWon() : "Desconocido") + "\n" +
+                "Partidos perdidos: " + (homeTeam != null ? homeTeam.getLostMatches() : "Desconocido") + "\n" +
+                "Partidos empatados: " + (homeTeam != null ? homeTeam.getTiedMatches() : "Desconocido");
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("Información del Equipo")
+                .setMessage(teamInfo)
+                .setPositiveButton("Ver Jugadores", (dialog, which) -> {
+                    PlayersFragment playersFragment = PlayersFragment.newInstance(match.getId());
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.frame_layout, playersFragment)
+                            .addToBackStack(null)
+                            .commit();
+                })
+                .setNeutralButton("Cerrar", null)
+                .show();
     }
 
     private class JoinMatchTask extends AsyncTask<Void, Void, Boolean> {

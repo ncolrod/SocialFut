@@ -102,6 +102,9 @@ public interface RetrofitRepository {
     @GET("matches/listJoin")
     Call<List<Match>> getJoinMatches();
 
+    @GET("matches/listPlayed")
+    Call<List<Match>> getMatchesPlayed();
+
     @POST("matches/cancel/{matchId}")
     Call<Boolean> cancelMatch(@Path("matchId") int matchId);
 

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="@color/white"
+        android:background="#CBFFFFFF"
         android:clickable="true"
         android:focusable="true"
         android:id="@+id/cardViewContainer">
@@ -123,6 +123,12 @@
                 android:backgroundTint="#FF0000"
                 android:textColor="@android:color/white"
                 android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/profileButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"/>
         </LinearLayout>
 
         <LinearLayout

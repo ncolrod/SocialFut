@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="700dp"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".api.fragments.CreateMatchFragment">
+    tools:context=".api.fragments.CreateMatchFragment"
+    android:background="@drawable/sevilla">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -14,7 +15,8 @@
         android:layout_weight="1"
         android:layout_marginBottom="16dp"
         app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
+        app:cardElevation="4dp"
+        android:backgroundTint="@color/white">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -32,14 +34,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     app:boxBackgroundMode="outline"
-                    app:boxStrokeColor="@color/black">
+                    app:boxStrokeColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:backgroundTint="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/locationEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Ubicación del partido"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
@@ -47,6 +53,7 @@
                     android:layout_height="wrap_content"
                     android:text="Fecha del partido"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="16sp"
                     android:layout_marginBottom="8dp" />
 
@@ -57,8 +64,9 @@
                     android:text="Seleccionar Fecha"
                     android:layout_marginBottom="16dp"
                     app:icon="@drawable/calendar"
-                    app:iconTint="@android:color/white"
-                    android:textColor="@android:color/white"
+                    app:iconTint="@color/white"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
                     app:backgroundTint="@color/black"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -67,6 +75,7 @@
                     android:layout_height="wrap_content"
                     android:text="Hora del partido"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="16sp"
                     android:layout_marginBottom="8dp" />
 
@@ -75,21 +84,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:timePickerMode="spinner"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="16dp"
+                    />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     app:boxBackgroundMode="outline"
-                    app:boxStrokeColor="@color/black">
+                    app:boxStrokeColor="@color/black"
+                    android:backgroundTint="@color/black"
+                    android:textColorHint="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/priceEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Precio por persona"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -98,7 +112,8 @@
                     android:layout_height="wrap_content"
                     android:text="Crear Partido"
                     android:backgroundTint="@color/black"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
                     style="@style/Widget.MaterialComponents.Button" />
 
             </LinearLayout>

@@ -17,7 +17,8 @@ public class SharedViewModel extends ViewModel {
 
     private MutableLiveData<User> user = new MutableLiveData<>(); // Usuario actual
     private MutableLiveData<Team> team = new MutableLiveData<>(); // Equipo del usuario actual
-    private MutableLiveData<List<Match>> matches = new MutableLiveData<>(); // Partidos del equipo
+    private MutableLiveData<List<Match>> matches = new MutableLiveData<>(); // Partidos disponibles
+    private MutableLiveData<List<Match>> matchesPlayed = new MutableLiveData<>(); // Partidos jugados
     private MutableLiveData<List<Goal>> userStatistics = new MutableLiveData<>(); // Estadísticas del usuario
     private MutableLiveData<List<User>> players = new MutableLiveData<>(); // Jugadores del equipo
     private MutableLiveData<List<User>> homeTeamPlayers = new MutableLiveData<>(); // Jugadores del equipo local
@@ -34,6 +35,12 @@ public class SharedViewModel extends ViewModel {
 
     public void setMatches(List<Match> matches) {
         this.matches.setValue(matches);
+    }
+
+    public void setMatchesPlayed(List<Match> matchesPlayed) {this.matchesPlayed.setValue(matchesPlayed);}
+
+    public MutableLiveData<List<Match>> getMatchesPlayed() {
+        return matchesPlayed;
     }
 
     public void setUserStatistics(List<Goal> userStatistics) {
@@ -66,6 +73,10 @@ public class SharedViewModel extends ViewModel {
 
     public LiveData<List<Match>> getMatchesLiveData() {
         return matches;
+    }
+
+    public LiveData<List<Match>> getMatchesPlayedLiveData(){
+        return matchesPlayed;
     }
 
     public LiveData<List<Goal>> getUserStatisticsLiveData() {

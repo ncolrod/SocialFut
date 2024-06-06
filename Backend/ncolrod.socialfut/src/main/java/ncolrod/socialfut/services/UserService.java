@@ -50,7 +50,6 @@ public class UserService {
         return false;
     }
 
-
     @Transactional
     public void updatePlayerStats(List<PlayerStatsUpdateRequest> playerStats) {
         for (PlayerStatsUpdateRequest stats : playerStats) {
@@ -66,5 +65,6 @@ public class UserService {
             }
         }
     }
+
 
 }

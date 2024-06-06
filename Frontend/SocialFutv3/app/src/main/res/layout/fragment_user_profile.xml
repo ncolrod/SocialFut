@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     tools:context=".api.fragments.UserProfileFragment"
-    android:background="@color/white">
+    android:background="@drawable/elbicho">
 
     <ImageView
         android:id="@+id/profileImage"
@@ -24,6 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Nombre del Usuario"
+        android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/profileImage"
@@ -39,6 +40,7 @@
         android:layout_height="wrap_content"
         android:text="Ciudad"
         android:textSize="18sp"
+        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@id/profileImage"
         app:layout_constraintTop_toBottomOf="@id/userName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,6 +55,7 @@
         android:text="Nombre del Equipo"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profileImage"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,6 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Position"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,6 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Estadísticas:"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -166,23 +171,25 @@
 
     <Button
         android:id="@+id/modifyProfileButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Modificar Perfil"
         app:layout_constraintTop_toBottomOf="@id/cardViewStats"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="40dp"/>
+        app:layout_constraintEnd_toStartOf="@id/deleteProfileButton"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="8dp"/>
 
     <Button
         android:id="@+id/deleteProfileButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Borrar Perfil"
-        app:layout_constraintTop_toBottomOf="@id/modifyProfileButton"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardViewStats"
+        app:layout_constraintStart_toEndOf="@id/modifyProfileButton"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="8dp"
         android:backgroundTint="#FF0000"/>
 
 

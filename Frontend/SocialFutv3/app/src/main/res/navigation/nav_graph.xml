@@ -8,7 +8,7 @@
     <!-- Fragmento de Matches -->
     <fragment
         android:id="@+id/matchesFragment"
-        android:name="ncolrod.socialfutv3.api.fragments.MatchesFragment"
+        android:name="ncolrod.socialfutv3.api.fragments.SearchMatchesFragment"
         android:label="MatchesFragment">
         <action
             android:id="@+id/action_matchesFragment_to_joinMatchFragment"

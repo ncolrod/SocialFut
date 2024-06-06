@@ -6,11 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.Match;
 import ncolrod.socialfutv3.api.models.Role;
@@ -31,6 +34,7 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchVie
         void onInfoButtonClick(int position);
         void onModifyButtonClick(int position);
         void onDeleteButtonClick(int position);
+        void onProfileButtonClick(int position);
     }
 
     public MatchesAdapter(Context context, List<Match> matchesList, Team currentTeam, User currentUser) {
@@ -81,6 +85,11 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchVie
 
         configureButtonsVisibility(holder, match);
 
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCardClick(position);
+            }
+        });
         holder.joinButton.setOnClickListener(v -> {
             if (listener != null) listener.onJoinButtonClick(position);
         });
@@ -95,6 +104,9 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchVie
         });
         holder.deleteButton.setOnClickListener(v -> {
             if (listener != null) listener.onDeleteButtonClick(position);
+        });
+        holder.profileButton.setOnClickListener(v -> {
+            if (listener != null) listener.onProfileButtonClick(position);  // Nuevo método
         });
     }
 
@@ -136,7 +148,7 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchVie
 
     public static class MatchViewHolder extends RecyclerView.ViewHolder {
         TextView teamNameTextView, dateTextView, locationTextView, pricePerPersonTextView;
-        Button joinButton, cancelButton, infoButton, modifyButton, deleteButton;
+        Button joinButton, cancelButton, infoButton, modifyButton, deleteButton, profileButton;
 
         public MatchViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -149,6 +161,7 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MatchVie
             infoButton = itemView.findViewById(R.id.infoButton);
             modifyButton = itemView.findViewById(R.id.modifyButton);
             deleteButton = itemView.findViewById(R.id.deleteButton);
+            profileButton = itemView.findViewById(R.id.profileButton);  // Nuevo botón
         }
     }
 }

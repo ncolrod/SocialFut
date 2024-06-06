@@ -12,12 +12,12 @@ import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
 import retrofit2.Call;
 
-public class LoadMatchesDataTask extends AsyncTask<Void, Void, List<Match>> {
+public class LoadMatchesPlayedTask extends AsyncTask<Void, Void, List<Match>> {
 
     private final SharedViewModel sharedViewModel;
     private final RetrofitRepository retrofitRepository;
 
-    public LoadMatchesDataTask(SharedViewModel sharedViewModel, RetrofitRepository retrofitRepository) {
+    public LoadMatchesPlayedTask(SharedViewModel sharedViewModel, RetrofitRepository retrofitRepository) {
         this.sharedViewModel = sharedViewModel;
         this.retrofitRepository = retrofitRepository;
     }
@@ -26,7 +26,7 @@ public class LoadMatchesDataTask extends AsyncTask<Void, Void, List<Match>> {
     protected List<Match> doInBackground(Void... voids) {
         try {
             Log.i("LoadMatchesTask", "Loading matches");
-            Call<List<Match>> call = BackendComunication.getRetrofitRepository().getJoinMatches();
+            Call<List<Match>> call = BackendComunication.getRetrofitRepository().getMatchesPlayed();
             retrofit2.Response<List<Match>> response = call.execute();
             if (response.isSuccessful()) {
                 return response.body();
@@ -44,7 +44,7 @@ public class LoadMatchesDataTask extends AsyncTask<Void, Void, List<Match>> {
     protected void onPostExecute(List<Match> matches) {
         super.onPostExecute(matches);
         if (matches != null) {
-            sharedViewModel.setMatches(matches);
+            sharedViewModel.setMatchesPlayed(matches);
         }
     }
 }

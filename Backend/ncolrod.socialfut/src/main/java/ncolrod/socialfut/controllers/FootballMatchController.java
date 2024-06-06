@@ -58,6 +58,16 @@ public class FootballMatchController {
         }
     }
 
+    @GetMapping("/listPlayed")
+    public ResponseEntity<List<FootballMatch>> getMatchesPlayed(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+        List<FootballMatch> matches = footballMatchService.listMatchesPlayed(userDetails);
+        if (matches != null) {
+            return ResponseEntity.ok(matches);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @GetMapping("/listJoin")
     public ResponseEntity<List<FootballMatch>> getJoinMatches(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
         List<FootballMatch> matches = footballMatchService.listJoinMatches(userDetails);

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/homeTeamName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home Team Name"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/matchesWon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Matches Won"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/matchesLost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Matches Lost"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/matchesTied"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Matches Tied"
+        android:layout_marginBottom="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playersRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"/>
+</LinearLayout>

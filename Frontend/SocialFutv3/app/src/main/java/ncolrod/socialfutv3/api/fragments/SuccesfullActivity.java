@@ -32,10 +32,10 @@ public class SuccesfullActivity extends AppCompatActivity {
                 replaceFragment(new UserProfileFragment());
             } else if (item.getItemId() == R.id.teamprofile) {
                 replaceFragment(new TeamProfileFragment());
-            } else if (item.getItemId() == R.id.create2){
-                replaceFragment(new CreateMatchFragment());
-            } else if (item.getItemId() == R.id.matches) {
-                replaceFragment(new MatchesFragment());
+            } else if (item.getItemId() == R.id.listofmatches){
+                replaceFragment(new ListOfMatchesFragment());
+            } else if (item.getItemId() == R.id.searchmatches) {
+                replaceFragment(new SearchMatchesFragment());
             }
 
             return true;

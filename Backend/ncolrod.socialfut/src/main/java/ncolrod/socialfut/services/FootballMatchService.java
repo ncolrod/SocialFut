@@ -43,31 +43,33 @@ public class FootballMatchService {
             if (user != null && user.getRole() != Role.USER) {
                 Team homeTeam = request.getHomeTeam();
 
-                // Ensure the home team is persisted before creating the match
-                //if (homeTeam.equals(null)) {
-                //    teamRepository.save(homeTeam);
-                //}
+                if (homeTeam.isAvailable()){
+                    FootballMatch footballMatch = new FootballMatch(
+                            homeTeam,
+                            request.getLocation(),
+                            user,
+                            request.getDate(),
+                            request.getPricePerPerson()
+                    );
 
-                FootballMatch footballMatch = new FootballMatch(
-                        homeTeam,
-                        request.getLocation(),
-                        user,
-                        request.getDate(),
-                        request.getPricePerPerson()
-                );
+                    /*
+                    Cuando un equipo crea un partido deja de estar disponible para unirse a otros partidos
+                    */
 
-                /*
-                Cuando un equipo crea un partido deja de estar disponible para unirse a otros partidos
-                 */
-                user.getTeam().setAvailable(true);
-                teamRepository.save(user.getTeam());
-                FootballMatch savedMatch = footballMatchRepository.save(footballMatch);
-                System.out.println(savedMatch.getId());
+                    user.getTeam().setAvailable(true);
+                    teamRepository.save(user.getTeam());
+                    FootballMatch savedMatch = footballMatchRepository.save(footballMatch);
+                    System.out.println(savedMatch.getId());
+                    return new CreateMatchResponse(true, "Match created successfully", savedMatch.getId());
 
-                return new CreateMatchResponse(true, "Match created successfully", savedMatch.getId());
+                } else {
+                    return new CreateMatchResponse(false, "Error: el equipo no esta disponible");
+                }
+
             } else {
                 return new CreateMatchResponse(false, "Unauthorized or insufficient permissions");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             return new CreateMatchResponse(false, "Error creating match: " + e.getMessage());
@@ -139,6 +141,21 @@ public class FootballMatchService {
         }
     }
 
+    public List<FootballMatch> listMatchesPlayed(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+        User user = (User) userDetails;
+        int teamJoinId = user.getTeam().getId();
+        try {
+            // Recuperamos los partidos para mostrar los que hemos jugado
+            return footballMatchRepository.listMatchPlayed(teamJoinId);
+        } catch (DataAccessException e) {
+            // Si hay un problema al acceder a los datos, lanza una excepción
+            throw new Exception("Error al acceder a los datos de los partidos", e);
+        } catch (Exception e) {
+            // Captura cualquier otra excepción no esperada y lanza una excepción general
+            throw new Exception("Error desconocido al recuperar los partidos de fútbol", e);
+        }
+    }
+
     @Transactional
     public boolean cancelMatch(int matchId, @AuthenticationPrincipal UserDetails userDetails) {
         User user = (User) userDetails;
@@ -179,9 +196,11 @@ public class FootballMatchService {
                 if (match.getCreatorUser().getId() == user.getId()) {
                     Team awayTeam = match.getAwayTeam();
                     Team localTeam = match.getHomeTeam();
-                    awayTeam.setAvailable(false);
+                    if (awayTeam != null){
+                        awayTeam.setAvailable(false);
+                        teamRepository.save(awayTeam);
+                    }
                     localTeam.setAvailable(false);
-                    teamRepository.save(awayTeam);
                     teamRepository.save(localTeam);
                     footballMatchRepository.delete(match);
                     return true;
@@ -226,6 +245,7 @@ public class FootballMatchService {
             FootballMatch match = matchOptional.get();
             if (match.getCreatorUser().equals(user)) {
                 match.setResult(result);
+                match.setFinished(true);
                 footballMatchRepository.save(match);
                 updateTeamStatistics(match, result);
                 return true;

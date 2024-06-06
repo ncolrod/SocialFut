@@ -23,11 +23,16 @@ import java.util.Calendar;
 import java.util.List;
 
 import ncolrod.socialfutv3.R;
+import ncolrod.socialfutv3.api.models.Role;
 import ncolrod.socialfutv3.api.models.Team;
 import ncolrod.socialfutv3.api.models.User;
 import ncolrod.socialfutv3.api.requests.CreateMatchRequest;
 import ncolrod.socialfutv3.api.responses.CreateMatchResponse;
 import ncolrod.socialfutv3.api.retrofit.BackendComunication;
+import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
+import ncolrod.socialfutv3.api.tasks.LoadMatchesDataTask;
+import ncolrod.socialfutv3.api.tasks.LoadMatchesPlayedTask;
+import ncolrod.socialfutv3.api.tasks.LoadTeamDataTask;
 import ncolrod.socialfutv3.api.tasks.LoadUserDataTask;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +46,7 @@ public class CreateMatchFragment extends Fragment {
     private Button datePickerButton;
     private SharedViewModel sharedViewModel;
     private Timestamp selectedDate;
+    private RetrofitRepository retrofitRepository;
 
     @Nullable
     @Override
@@ -92,8 +98,23 @@ public class CreateMatchFragment extends Fragment {
             price = 0.0;
         }
 
-        if (selectedDate == null) {
-            Toast.makeText(getContext(), "Por favor, selecciona una fecha", Toast.LENGTH_SHORT).show();
+        Team homeTeam = sharedViewModel.getTeamLiveData().getValue();
+        User creatorUser = sharedViewModel.getUserLiveData().getValue();
+
+        // Verificar si el usuario actual es administrador
+        if (creatorUser.getRole() != Role.ADMIN) {
+            Toast.makeText(getContext(), "No tienes permisos para crear el partido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Verificar si el equipo está marcado como no disponible
+        if (!homeTeam.isAvailable()) {
+            Toast.makeText(getContext(), "El equipo no puede crear un partido porque ya ha creado uno", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (selectedDate == null || location.isEmpty()) {
+            Toast.makeText(getContext(), "Por favor, introduce todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -103,13 +124,15 @@ public class CreateMatchFragment extends Fragment {
         calendar.set(Calendar.MINUTE, minute);
         Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
-        Team homeTeam = sharedViewModel.getTeamLiveData().getValue();
-        User creatorUser = sharedViewModel.getUserLiveData().getValue();
 
         if (homeTeam == null || creatorUser == null) {
             Toast.makeText(getContext(), "Error: User or team not loaded", Toast.LENGTH_SHORT).show();
             return;
         }
+
+
+
+
 
         CreateMatchRequest createMatchRequest = new CreateMatchRequest(homeTeam, location, creatorUser, timestamp, price);
         Call<CreateMatchResponse> call = BackendComunication.getRetrofitRepository().createMatch(createMatchRequest);
@@ -119,7 +142,10 @@ public class CreateMatchFragment extends Fragment {
             public void onResponse(Call<CreateMatchResponse> call, Response<CreateMatchResponse> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Match created successfully", Toast.LENGTH_SHORT).show();
-                    Log.i("CreateMatchFragment", "Match created successfully: " + response.body().toString());
+                    Log.i("CreateMatchFragment", "Match created successfully: " + response.body().toString());                    new LoadMatchesDataTask(sharedViewModel, retrofitRepository).execute();
+                    new LoadMatchesPlayedTask(sharedViewModel, retrofitRepository).execute();
+                    new LoadMatchesDataTask(sharedViewModel,retrofitRepository).execute();
+
 
                 } else {
                     Toast.makeText(getContext(), "Failed to create match", Toast.LENGTH_SHORT).show();

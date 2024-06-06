@@ -39,7 +39,6 @@ public class FootballMatch {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator_user_id")
     private User creatorUser;
-
     private boolean isCreated;
     private boolean isFinished;
 

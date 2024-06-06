@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
+import java.util.List;
+
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.adapter.PlayerAdapter;
 import ncolrod.socialfutv3.api.models.Role;
@@ -37,6 +39,7 @@ public class TeamProfileFragment extends Fragment {
     private PlayerAdapter playerAdapter;
     private RetrofitRepository retrofitRepository;
     private TextView tvPartidosGanados, tvPartidosPerdidos, tvPartidosEmpatados;
+    private String captains;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,6 +51,9 @@ public class TeamProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        new LoadTeamDataTask(mViewModel, retrofitRepository).execute();
+        new LoadPlayersTask(mViewModel, retrofitRepository).execute();
 
         teamNameTextView = view.findViewById(R.id.teamName);
         teamLocationTextView = view.findViewById(R.id.teamLocation);
@@ -72,7 +78,6 @@ public class TeamProfileFragment extends Fragment {
                 tvPartidosPerdidos.setText("Partidos perdidos: "+team.getLostMatches());
                 tvPartidosEmpatados.setText("Partidos empatados: "+team.getTiedMatches());
                 //teamCaptainTextView.setText(team.getCaptain().getFirstname() + " " + team.getCaptain().getLastname());
-                new LoadPlayersTask(mViewModel, retrofitRepository).execute();
             }
         });
 
@@ -83,7 +88,7 @@ public class TeamProfileFragment extends Fragment {
         });
 
         new LoadTeamDataTask(mViewModel, retrofitRepository).execute();
-
+        new LoadPlayersTask(mViewModel, retrofitRepository).execute();
         // Set up click listener to show edit dialog
         llTeam.setOnClickListener(v -> showEditTeamDialog());
     }

@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/matches"
+        android:id="@+id/searchmatches"
         android:title="Match"
         android:icon="@drawable/matches"
-        android:iconTint="@color/black"
+        android:iconTint="@color/white"
         />
 
     <item
-        android:id="@+id/create2"
-        android:title="Create"
+        android:id="@+id/listofmatches"
+        android:title="My Matches"
         android:icon="@drawable/mymatch"
-        android:iconTint="@color/black"
+        android:iconTint="@color/white"
 
         />
 
@@ -28,13 +28,13 @@
         android:id="@+id/teamprofile"
         android:title="Team"
         android:icon="@drawable/teamprofile"
-        android:iconTint="@color/black"
+        android:iconTint="@color/white"
         />
 
     <item
         android:id="@+id/userprofile"
         android:title="User"
         android:icon="@drawable/userprofile"
-        android:iconTint="@color/black"
+        android:iconTint="@color/white"
         />
 </menu>

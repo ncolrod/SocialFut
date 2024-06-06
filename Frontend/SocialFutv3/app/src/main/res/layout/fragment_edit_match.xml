@@ -4,9 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="?android:attr/windowBackground">
+    android:background="@drawable/navas"
+    >
 
     <TextView
+        android:layout_marginTop="300dp"
         android:id="@+id/textViewHomeTeam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +16,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:paddingBottom="8dp"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/white"/>
 
     <EditText
         android:id="@+id/editTextDate"
@@ -60,7 +62,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Guardar"
-        android:background="?android:attr/colorButtonNormal"
+        android:textStyle="bold"
+        android:background="@color/black"
         android:textColor="@android:color/white"
         android:padding="12dp"/>
 </LinearLayout>
