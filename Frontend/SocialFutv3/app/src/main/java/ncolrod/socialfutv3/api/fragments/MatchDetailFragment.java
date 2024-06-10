@@ -43,7 +43,7 @@ public class MatchDetailFragment extends Fragment {
     private EditText homeTeamScoreEditText;
     private EditText awayTeamScoreEditText;
     private Button submitScoreButton;
-    private User currentUser; // Current authenticated user
+    private User currentUser;
     private boolean isCreator = false;
 
     private RetrofitRepository retrofitRepository;
@@ -69,7 +69,6 @@ public class MatchDetailFragment extends Fragment {
 
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
-        // Assuming the currentUser is set somewhere in your app
         currentUser = sharedViewModel.getUserLiveData().getValue();
 
         if (getArguments() != null) {
@@ -86,10 +85,12 @@ public class MatchDetailFragment extends Fragment {
         sharedViewModel.getMatchesLiveData().observe(getViewLifecycleOwner(), matches -> {
             for (Match match : matches) {
                 if (match.getId() == matchId) {
-                    matchDetailsTextView.setText("Match ID: " + match.getId() +
-                            "\nHome Team: " + match.getHomeTeam().getName() +
-                            "\nAway Team: " + match.getAwayTeam().getName() +
-                            "\nCreated: " + match.isCreated());
+                    matchDetailsTextView.setText(
+                            match.getHomeTeam().getName()+" vs "+match.getAwayTeam().getName()+"\n"
+                            +"Ubicacion: "+match.getLocation()+"\n"
+                            +"Fecha: "+match.getDate()
+                            );
+
                     isCreator = match.getCreatorUser().getId() == currentUser.getId();
                     if (isCreator) {
                         enableScoreSubmission();

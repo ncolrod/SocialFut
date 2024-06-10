@@ -43,7 +43,7 @@ public class FootballMatchService {
             if (user != null && user.getRole() != Role.USER) {
                 Team homeTeam = request.getHomeTeam();
 
-                if (homeTeam.isAvailable()){
+                if (!homeTeam.isAvailable()){
                     FootballMatch footballMatch = new FootballMatch(
                             homeTeam,
                             request.getLocation(),

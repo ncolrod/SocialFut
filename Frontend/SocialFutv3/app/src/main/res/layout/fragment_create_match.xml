@@ -102,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:hint="Precio por persona"
                         android:inputType="numberDecimal"
-                        android:textColor="@color/white"
+                        android:textColor="@color/black"
                         android:textStyle="bold"/>
                 </com.google.android.material.textfield.TextInputLayout>
 

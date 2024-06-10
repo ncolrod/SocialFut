@@ -101,14 +101,12 @@ public class CreateMatchFragment extends Fragment {
         Team homeTeam = sharedViewModel.getTeamLiveData().getValue();
         User creatorUser = sharedViewModel.getUserLiveData().getValue();
 
-        // Verificar si el usuario actual es administrador
         if (creatorUser.getRole() != Role.ADMIN) {
             Toast.makeText(getContext(), "No tienes permisos para crear el partido", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Verificar si el equipo está marcado como no disponible
-        if (!homeTeam.isAvailable()) {
+        if (homeTeam.isAvailable()) {
             Toast.makeText(getContext(), "El equipo no puede crear un partido porque ya ha creado uno", Toast.LENGTH_SHORT).show();
             return;
         }

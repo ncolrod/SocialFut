@@ -34,6 +34,7 @@ public class FootballMatchController {
         if (response.isSuccess()) {
             return ResponseEntity.ok(response);
         } else {
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }

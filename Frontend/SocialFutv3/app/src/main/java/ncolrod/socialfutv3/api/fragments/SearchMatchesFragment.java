@@ -115,7 +115,7 @@ public class SearchMatchesFragment extends Fragment {
                     public void onInfoButtonClick(int position) {
                         Match match = matchesList.get(position);
                         Team awayTeam = match.getAwayTeam();
-                        if (awayTeam == null || awayTeam.getId() != currentTeam.getId()) {
+                        if (awayTeam == null) {
                             Toast.makeText(getContext(), "No tienes permisos, únete primero", Toast.LENGTH_SHORT).show();
                         } else {
                             MatchDetailFragment matchDetailsFragment = MatchDetailFragment.newInstance(matchesList.get(position).getId());
@@ -322,6 +322,10 @@ public class SearchMatchesFragment extends Fragment {
         protected void onPostExecute(Boolean success) {
             if (success) {
                 Log.i(":::TaskDeleteMatch:::", "Borrado con exito");
+                matchesList.get(position).getHomeTeam().setAvailable(false);
+                if (matchesList.get(position).getAwayTeam()!=null){
+                    matchesList.get(position).getAwayTeam().setAvailable(false);
+                }
                 matchesList.remove(position);
                 matchesAdapter.notifyItemRemoved(position);
                 new AlertDialog.Builder(getContext())
