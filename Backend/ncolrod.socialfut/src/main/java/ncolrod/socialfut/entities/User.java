@@ -1,8 +1,6 @@
 package ncolrod.socialfut.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-
+/**
+ * Entidad que representa a un usuario en el sistema.
+ * Implementamos la interfaz UserDetails para integrarse con Spring Security.
+ */
 @Builder
 @Getter
 @Setter

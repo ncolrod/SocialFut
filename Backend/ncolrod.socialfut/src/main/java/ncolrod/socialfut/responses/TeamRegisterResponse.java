@@ -1,8 +1,11 @@
 package ncolrod.socialfut.responses;
 
 import lombok.*;
-import ncolrod.socialfut.entities.Team;
 
+/**
+ * Clase que representa la respuesta al registrar un equipo.
+ * Indica si la operación fue exitosa.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -11,6 +14,8 @@ import ncolrod.socialfut.entities.Team;
 @Setter
 public class TeamRegisterResponse {
 
-    private boolean succesfull;
-
+    /**
+     * Indica si el registro del equipo fue exitoso.
+     */
+    private boolean successful;
 }

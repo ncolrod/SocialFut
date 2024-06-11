@@ -1,13 +1,15 @@
 package ncolrod.socialfut.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
 
+
+/**
+ * Entidad que representa un equipo en el sistema.
+ */
 @Builder
 @Data
 @NoArgsConstructor

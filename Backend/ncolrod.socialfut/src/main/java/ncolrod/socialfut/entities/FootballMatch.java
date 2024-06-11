@@ -3,11 +3,11 @@ package ncolrod.socialfut.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Date;
-
-import java.sql.Time;
 import java.sql.Timestamp;
 
+/**
+ * Entidad que representa un partido de fútbol en el sistema.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

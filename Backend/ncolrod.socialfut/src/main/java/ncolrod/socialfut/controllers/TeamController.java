@@ -1,6 +1,5 @@
 package ncolrod.socialfut.controllers;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import ncolrod.socialfut.entities.Team;
 import ncolrod.socialfut.entities.User;
@@ -19,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controlador REST para gestionar las operaciones relacionadas con los equipos.
+ */
 @RestController
 @RequestMapping("/teams")
 @AllArgsConstructor
@@ -26,24 +28,12 @@ public class TeamController {
 
     private final TeamService teamService;
 
-    /*
-
-    @GetMapping(value = "teams", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<AuthenticationRespose> teamRegister(
-            @RequestBody TeamRegisterRequest request
-    ){
-        try{
-            return ResponseEntity.ok().build();
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    */
-
-
+    /**
+     * Endpoint para obtener un equipo por su nombre.
+     *
+     * @param name el nombre del equipo a buscar
+     * @return una respuesta con los detalles del equipo o un error si no se encuentra
+     */
     @GetMapping(value = "teams", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Team> getTeamByName(@RequestParam("name") String name) {
         try {
@@ -60,39 +50,55 @@ public class TeamController {
         }
     }
 
-
+    /**
+     * Endpoint para registrar un nuevo equipo.
+     *
+     * @param request la solicitud de registro del equipo
+     * @param userDetails los detalles del usuario autenticado
+     * @return una respuesta indicando si el registro fue exitoso o si hubo un error
+     */
     @PostMapping(value = "save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<TeamRegisterResponse> register(
             @RequestBody TeamRegisterRequest request,
             @AuthenticationPrincipal UserDetails userDetails
-            ){
-        try{
+    ) {
+        try {
             User user = (User) userDetails;
             return ResponseEntity.ok(teamService.register(request, user));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
 
+    /**
+     * Endpoint para unirse a un equipo.
+     *
+     * @param request la solicitud de unión al equipo
+     * @param userDetails los detalles del usuario autenticado
+     * @return una respuesta indicando si la unión fue exitosa o si hubo un error
+     */
     @PostMapping(value = "join", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<TeamJoinResponse> joinTeam(@RequestBody TeamJoinRequest request, @AuthenticationPrincipal UserDetails userDetails) {
         TeamJoinResponse response = teamService.join(request, (User) userDetails);
-
-        System.out.println(userDetails);
-        // Verificar si la operación fue exitosa
-        if (response.isSuccesfull()) {
-            // Devolver una respuesta exitosa con el código HTTP 200 OK
+        // Verificamos si la operación fue exitosa
+        if (response.isSuccessful()) {
+            // Devolvemos una respuesta exitosa con el código HTTP 200 OK
             return ResponseEntity.ok(response);
         } else {
-            // Devolver una respuesta de error con el código HTTP 400 Bad Request
+            // Devolvemos una respuesta de error con el código HTTP 400 Bad Request
             return ResponseEntity.badRequest().build();
         }
     }
 
-
+    /**
+     * Endpoint para obtener el equipo del usuario autenticado.
+     *
+     * @param userDetails los detalles del usuario autenticado
+     * @return una respuesta con los detalles del equipo o un error si no se encuentra
+     */
     @GetMapping(value = "/getteam", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Team> getTeamByUser(@AuthenticationPrincipal UserDetails userDetails) {
         try {
@@ -101,7 +107,6 @@ public class TeamController {
             if (userTeam != null) {
                 int teamId = userTeam.getId();
                 Optional<Team> team = teamService.getTeamById(teamId);
-                System.out.println("TEAM ID: " + teamId);
                 if (team.isPresent()) {
                     return ResponseEntity.ok(team.get());
                 } else {
@@ -118,6 +123,13 @@ public class TeamController {
         }
     }
 
+    /**
+     * Endpoint para actualizar la información de un equipo.
+     *
+     * @param updatedTeam los nuevos datos del equipo
+     * @param userDetails los detalles del usuario autenticado
+     * @return una respuesta indicando si la actualización fue exitosa o si hubo un error
+     */
     @PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Team> updateTeam(@RequestBody Team updatedTeam, @AuthenticationPrincipal UserDetails userDetails) {
         User user = (User) userDetails;
@@ -133,7 +145,12 @@ public class TeamController {
         }
     }
 
-
+    /**
+     * Endpoint para obtener los jugadores de un equipo.
+     *
+     * @param userDetails los detalles del usuario autenticado
+     * @return una respuesta con la lista de jugadores del equipo o un error si no se encuentran
+     */
     @GetMapping("/players")
     public ResponseEntity<List<User>> getTeamPlayers(@AuthenticationPrincipal UserDetails userDetails) {
         User user = (User) userDetails;
@@ -146,6 +163,4 @@ public class TeamController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
 }
