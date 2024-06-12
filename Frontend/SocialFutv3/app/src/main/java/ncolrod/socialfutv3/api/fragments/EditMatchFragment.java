@@ -30,6 +30,9 @@ import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * Fragmento para editar los detalles de un partido.
+ */
 public class EditMatchFragment extends Fragment {
 
     private TextView homeTeamTextView;
@@ -39,6 +42,12 @@ public class EditMatchFragment extends Fragment {
     private RetrofitRepository retrofitRepository;
     private Match match;
 
+    /**
+     * Crea una nueva instancia del fragmento con los detalles del partido.
+     *
+     * @param match El partido a editar.
+     * @return Una nueva instancia de EditMatchFragment.
+     */
     public static EditMatchFragment newInstance(Match match) {
         EditMatchFragment fragment = new EditMatchFragment();
         Bundle args = new Bundle();
@@ -70,7 +79,7 @@ public class EditMatchFragment extends Fragment {
         saveButton = view.findViewById(R.id.buttonSave);
 
         if (match != null) {
-            homeTeamTextView.setText(match.getHomeTeam() != null ? match.getHomeTeam().getName() : "Equipo no especificado");
+            homeTeamTextView.setText(match.getHomeTeam() != null ? match.getHomeTeam().getName() : "Unspecified team");
             dateEditText.setText(new SimpleDateFormat("yyyy-MM-dd").format(match.getDate()));
             timeEditText.setText(new SimpleDateFormat("HH:mm").format(match.getDate()));
             priceEditText.setText(String.valueOf(match.getPricePerPerson()));
@@ -82,6 +91,9 @@ public class EditMatchFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Guarda los detalles del partido editado.
+     */
     private void saveMatchDetails() {
         String date = dateEditText.getText().toString().trim();
         String time = timeEditText.getText().toString().trim();
@@ -89,7 +101,7 @@ public class EditMatchFragment extends Fragment {
         String location = locationEditText.getText().toString().trim();
 
         if (TextUtils.isEmpty(date) || TextUtils.isEmpty(time) || TextUtils.isEmpty(price) || TextUtils.isEmpty(location)) {
-            Toast.makeText(getContext(), "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "All fields are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -98,7 +110,7 @@ public class EditMatchFragment extends Fragment {
             Timestamp timestamp = Timestamp.valueOf(dateTime + ":00"); // Formato: "yyyy-MM-dd HH:mm:ss"
             match.setDate(timestamp);
         } catch (IllegalArgumentException e) {
-            Toast.makeText(getContext(), "Formato de fecha/hora incorrecto", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Incorrect date/time format", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -108,6 +120,9 @@ public class EditMatchFragment extends Fragment {
         new UpdateMatchTask(match).execute();
     }
 
+    /**
+     * Tarea en segundo plano para actualizar los detalles del partido.
+     */
     private class UpdateMatchTask extends AsyncTask<Void, Void, Boolean> {
         private Match match;
 
@@ -121,7 +136,7 @@ public class EditMatchFragment extends Fragment {
             request.setDate(match.getDate());
             request.setLocation(match.getLocation());
             request.setPricePerPerson(match.getPricePerPerson());
-            request.setHomeTeam(match.getHomeTeam()); // Asegúrate de pasar el equipo
+            request.setHomeTeam(match.getHomeTeam());
             request.setCreatorUser(match.getCreatorUser());
 
             try {
@@ -137,10 +152,10 @@ public class EditMatchFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                Toast.makeText(getContext(), "Partido actualizado exitosamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Match updated successfully", Toast.LENGTH_SHORT).show();
                 requireActivity().getSupportFragmentManager().popBackStack();
             } else {
-                Toast.makeText(getContext(), "Error al actualizar el partido", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error updating match", Toast.LENGTH_SHORT).show();
             }
         }
     }

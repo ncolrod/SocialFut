@@ -30,6 +30,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Fragmento para insertar las estadísticas de los jugadores después de un partido.
+ */
 public class InsertPlayerStatsFragment extends Fragment {
 
     private static final String ARG_MATCH_ID = "matchId";
@@ -42,6 +45,12 @@ public class InsertPlayerStatsFragment extends Fragment {
     private PlayerStatsAdapter awayTeamAdapter;
     private Button saveButton;
 
+    /**
+     * Crea una nueva instancia del fragmento con el ID del partido.
+     *
+     * @param matchId El ID del partido.
+     * @return Una nueva instancia de InsertPlayerStatsFragment.
+     */
     public static InsertPlayerStatsFragment newInstance(int matchId) {
         InsertPlayerStatsFragment fragment = new InsertPlayerStatsFragment();
         Bundle args = new Bundle();
@@ -89,14 +98,23 @@ public class InsertPlayerStatsFragment extends Fragment {
         saveButton.setOnClickListener(v -> saveStats());
     }
 
+    /**
+     * Carga los jugadores del equipo local.
+     */
     private void loadHomeTeamPlayers() {
         new LoadHomeTeamPlayersTask(getContext(), sharedViewModel.getHomeTeamPlayers()).execute(matchId);
     }
 
+    /**
+     * Carga los jugadores del equipo visitante.
+     */
     private void loadAwayTeamPlayers() {
         new LoadAwayTeamPlayersTask(getContext(), sharedViewModel.getAwayTeamPlayers()).execute(matchId);
     }
 
+    /**
+     * Guarda las estadísticas de los jugadores.
+     */
     private void saveStats() {
         List<User> homeTeamPlayers = homeTeamAdapter.getPlayers();
         List<User> awayTeamPlayers = awayTeamAdapter.getPlayers();
@@ -125,23 +143,28 @@ public class InsertPlayerStatsFragment extends Fragment {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Stats saved successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Statistics saved successfully", Toast.LENGTH_SHORT).show();
                     updateUserLiveData(homeTeamPlayers, awayTeamPlayers);
                     navigateToUserProfile();
-
                 } else {
-                    Toast.makeText(getContext(), "Failed to save stats", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failure to save statistics", Toast.LENGTH_SHORT).show();
                     Log.i(":::UpdatePlayerStats:::", String.valueOf(response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Failure to save statistics", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    /**
+     * Actualiza los datos del usuario en el ViewModel compartido.
+     *
+     * @param homeTeamPlayers Los jugadores del equipo local.
+     * @param awayTeamPlayers Los jugadores del equipo visitante.
+     */
     private void updateUserLiveData(List<User> homeTeamPlayers, List<User> awayTeamPlayers) {
         User currentUser = sharedViewModel.getUserLiveData().getValue();
         if (currentUser != null) {
@@ -165,6 +188,9 @@ public class InsertPlayerStatsFragment extends Fragment {
         }
     }
 
+    /**
+     * Navega al perfil del usuario.
+     */
     private void navigateToUserProfile() {
         UserProfileFragment userProfileFragment = new UserProfileFragment();
         getParentFragmentManager().beginTransaction()

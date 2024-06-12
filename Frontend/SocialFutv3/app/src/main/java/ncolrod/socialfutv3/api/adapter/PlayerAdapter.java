@@ -13,6 +13,9 @@ import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.Role;
 import ncolrod.socialfutv3.api.models.User;
 
+/**
+ * Adaptador para mostrar la lista de jugadores en un RecyclerView.
+ */
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder> {
 
     private List<User> players = new ArrayList<>();
@@ -33,6 +36,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         User player = players.get(position);
         String fullName = getFullName(player);
 
+        // Añadir "(Captain)" si el jugador es un ADMIN
         if (player.getRole() == Role.ADMIN) {
             fullName += " (Captain)";
         }
@@ -41,12 +45,16 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         holder.playerPositionTextView.setText(player.getPosition() != null ? player.getPosition() : "Position not specified");
     }
 
-
     @Override
     public int getItemCount() {
         return players.size();
     }
 
+    /**
+     * Actualiza la lista de jugadores con una nueva lista.
+     *
+     * @param newPlayers la nueva lista de jugadores
+     */
     public void updatePlayers(List<User> newPlayers) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new PlayerDiffCallback(this.players, newPlayers));
         this.players.clear();
@@ -54,12 +62,21 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         diffResult.dispatchUpdatesTo(this);
     }
 
+    /**
+     * Obtiene el nombre completo del jugador.
+     *
+     * @param player el jugador
+     * @return el nombre completo del jugador
+     */
     private String getFullName(User player) {
         String firstName = player.getFirstname() != null ? player.getFirstname() : "Unknown";
         String lastName = player.getLastname() != null ? player.getLastname() : "Player";
         return firstName + " " + lastName;
     }
 
+    /**
+     * ViewHolder para los elementos de la lista de jugadores.
+     */
     static class PlayerViewHolder extends RecyclerView.ViewHolder {
         TextView playerNameTextView, playerPositionTextView;
 
@@ -70,6 +87,9 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         }
     }
 
+    /**
+     * Callback para calcular las diferencias entre dos listas de jugadores.
+     */
     static class PlayerDiffCallback extends DiffUtil.Callback {
 
         private final List<User> oldList;

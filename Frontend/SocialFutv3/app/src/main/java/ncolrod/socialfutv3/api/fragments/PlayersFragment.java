@@ -14,6 +14,9 @@ import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.adapter.ShowPlayerStatsAdapter;
 import ncolrod.socialfutv3.api.tasks.LoadHomeTeamPlayersTask;
 
+/**
+ * Fragmento que muestra la lista de jugadores de un equipo en un partido.
+ */
 public class PlayersFragment extends Fragment {
     private static final String ARG_MATCH_ID = "matchId";
     private int matchId;
@@ -21,6 +24,12 @@ public class PlayersFragment extends Fragment {
     private RecyclerView playersRecyclerView;
     private ShowPlayerStatsAdapter playerAdapter;
 
+    /**
+     * Crea una nueva instancia de PlayersFragment con el ID del partido.
+     *
+     * @param matchId El ID del partido.
+     * @return Una nueva instancia de PlayersFragment.
+     */
     public static PlayersFragment newInstance(int matchId) {
         PlayersFragment fragment = new PlayersFragment();
         Bundle args = new Bundle();
@@ -48,6 +57,7 @@ public class PlayersFragment extends Fragment {
         playersRecyclerView = view.findViewById(R.id.playersRecyclerView);
         playersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Observar los jugadores del equipo local y actualizar el adaptador cuando cambie
         sharedViewModel.getHomeTeamPlayersLiveData().observe(getViewLifecycleOwner(), players -> {
             playerAdapter = new ShowPlayerStatsAdapter(players);
             playersRecyclerView.setAdapter(playerAdapter);
@@ -56,6 +66,9 @@ public class PlayersFragment extends Fragment {
         loadPlayers();
     }
 
+    /**
+     * Carga los jugadores del equipo local.
+     */
     private void loadPlayers() {
         new LoadHomeTeamPlayersTask(getContext(), sharedViewModel.getHomeTeamPlayers()).execute(matchId);
     }

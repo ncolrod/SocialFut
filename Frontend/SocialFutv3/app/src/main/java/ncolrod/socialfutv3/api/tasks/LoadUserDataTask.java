@@ -11,16 +11,31 @@ import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
 import retrofit2.Call;
 
+/**
+ * Clase AsyncTask para cargar los datos del usuario en segundo plano y actualizar el SharedViewModel.
+ */
 public class LoadUserDataTask extends AsyncTask<Void, Void, User> {
 
     private final SharedViewModel sharedViewModel;
     private final RetrofitRepository retrofitRepository;
 
-    public LoadUserDataTask(SharedViewModel mViewModel, RetrofitRepository retrofitRepository) {
-        this.sharedViewModel = mViewModel;
+    /**
+     * Constructor para inicializar el ViewModel compartido y el repositorio de Retrofit.
+     *
+     * @param sharedViewModel el ViewModel compartido para actualizar los datos.
+     * @param retrofitRepository el repositorio de Retrofit para realizar las peticiones.
+     */
+    public LoadUserDataTask(SharedViewModel sharedViewModel, RetrofitRepository retrofitRepository) {
+        this.sharedViewModel = sharedViewModel;
         this.retrofitRepository = retrofitRepository;
     }
 
+    /**
+     * Realiza la tarea en segundo plano para cargar los datos del usuario.
+     *
+     * @param voids sin parámetros.
+     * @return un objeto User o null en caso de error.
+     */
     @Override
     protected User doInBackground(Void... voids) {
         try {
@@ -39,12 +54,20 @@ public class LoadUserDataTask extends AsyncTask<Void, Void, User> {
         }
     }
 
+    /**
+     * Se ejecuta después de que la tarea en segundo plano haya terminado.
+     *
+     * @param user el objeto User cargado.
+     */
     @Override
     protected void onPostExecute(User user) {
         super.onPostExecute(user);
-        sharedViewModel.setUser(user);
-        Log.i(":::LoadUserTask:::", "Loaded user " + user.getFirstname() + " " +user.getLastname() +
-                " | " + user.getEmail() + " | "+ user.getTelephone()+ " | "+ user.getLocation()+ " | "+user.getPosition());
-
+        if (user != null) {
+            sharedViewModel.setUser(user);
+            Log.i(":::LoadUserTask:::", "Loaded user " + user.getFirstname() + " " + user.getLastname() +
+                    " | " + user.getEmail() + " | " + user.getTelephone() + " | " + user.getLocation() + " | " + user.getPosition());
+        } else {
+            Log.e(":::LoadUserTask:::", "Failed to load user");
+        }
     }
 }

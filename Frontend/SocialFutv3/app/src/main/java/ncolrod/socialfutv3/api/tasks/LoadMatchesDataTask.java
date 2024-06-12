@@ -12,16 +12,31 @@ import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
 import retrofit2.Call;
 
+/**
+ * Task para cargar los partidos en segundo plano y actualizar el SharedViewModel.
+ */
 public class LoadMatchesDataTask extends AsyncTask<Void, Void, List<Match>> {
 
     private final SharedViewModel sharedViewModel;
     private final RetrofitRepository retrofitRepository;
 
+    /**
+     * Constructor para inicializar el ViewModel compartido y el repositorio de Retrofit.
+     *
+     * @param sharedViewModel el ViewModel compartido para actualizar los datos.
+     * @param retrofitRepository el repositorio de Retrofit para realizar las peticiones.
+     */
     public LoadMatchesDataTask(SharedViewModel sharedViewModel, RetrofitRepository retrofitRepository) {
         this.sharedViewModel = sharedViewModel;
         this.retrofitRepository = retrofitRepository;
     }
 
+    /**
+     * Realiza la tarea en segundo plano para cargar los partidos.
+     *
+     * @param voids sin parámetros.
+     * @return una lista de partidos o null en caso de error.
+     */
     @Override
     protected List<Match> doInBackground(Void... voids) {
         try {
@@ -40,6 +55,11 @@ public class LoadMatchesDataTask extends AsyncTask<Void, Void, List<Match>> {
         }
     }
 
+    /**
+     * Se ejecuta después de que la tarea en segundo plano haya terminado.
+     *
+     * @param matches la lista de partidos cargados.
+     */
     @Override
     protected void onPostExecute(List<Match> matches) {
         super.onPostExecute(matches);

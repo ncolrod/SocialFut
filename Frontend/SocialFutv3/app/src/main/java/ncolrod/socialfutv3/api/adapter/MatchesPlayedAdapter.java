@@ -19,9 +19,10 @@ import ncolrod.socialfutv3.api.fragments.SharedViewModel;
 import ncolrod.socialfutv3.api.models.Match;
 import ncolrod.socialfutv3.api.models.Team;
 import ncolrod.socialfutv3.api.models.User;
-import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
-import ncolrod.socialfutv3.api.tasks.LoadTeamDataTask;
 
+/**
+ * Adaptador para mostrar la lista de partidos jugados en un RecyclerView.
+ */
 public class MatchesPlayedAdapter extends RecyclerView.Adapter<MatchesPlayedAdapter.MatchPlayedViewHolder> {
 
     private Context context;
@@ -31,6 +32,9 @@ public class MatchesPlayedAdapter extends RecyclerView.Adapter<MatchesPlayedAdap
     private User currentUser;
     private OnItemClickListener listener;
 
+    /**
+     * Interfaz para manejar los eventos de clic en los elementos de la lista.
+     */
     public interface OnItemClickListener {
         void onProfileButtonClick(int position);
     }
@@ -47,7 +51,6 @@ public class MatchesPlayedAdapter extends RecyclerView.Adapter<MatchesPlayedAdap
         this.listener = listener;
     }
 
-
     @NonNull
     @Override
     public MatchPlayedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -59,20 +62,20 @@ public class MatchesPlayedAdapter extends RecyclerView.Adapter<MatchesPlayedAdap
     public void onBindViewHolder(@NonNull MatchPlayedViewHolder holder, int position) {
         Match match = matchesPlayedList.get(position);
 
+        // Configurar los valores de los campos del partido
         String localTeamName = match.getHomeTeam() != null ? match.getHomeTeam().getName() : "Unknown Team";
         String awayTeamName = match.getAwayTeam() != null ? match.getAwayTeam().getName() : "Unknown Team";
         holder.matchTextView.setText(localTeamName + " vs " + awayTeamName);
-
-        // No es necesario llamar a LoadTeamDataTask(sharedViewModel, retrofitRepository) aquí
 
         currentTeam = sharedViewModel.getTeamLiveData().getValue();
         boolean homeTeam = false;
         boolean awayTeam = false;
 
-        if (currentTeam.getId()==match.getHomeTeam().getId()){
-            homeTeam=true;
-        } else if (currentTeam.getId()==match.getAwayTeam().getId()) {
-            awayTeam=true;
+        // Determinar si el equipo actual es el equipo local o visitante
+        if (currentTeam.getId() == match.getHomeTeam().getId()) {
+            homeTeam = true;
+        } else if (currentTeam.getId() == match.getAwayTeam().getId()) {
+            awayTeam = true;
         }
 
         // Separar el resultado en dos partes (goles del equipo local y goles del equipo visitante)
@@ -104,6 +107,7 @@ public class MatchesPlayedAdapter extends RecyclerView.Adapter<MatchesPlayedAdap
             holder.resultTextView.setText("N/A");
         }
 
+        // Configurar los valores de los campos de la fecha, ubicación y resultado
         if (match.getDate() != null) {
             holder.dateTextView.setText(formatDate(match.getDate().toString()));
         } else {
@@ -127,9 +131,14 @@ public class MatchesPlayedAdapter extends RecyclerView.Adapter<MatchesPlayedAdap
         holder.profileButton.setOnClickListener(v -> {
             if (listener != null) listener.onProfileButtonClick(position);
         });
-
     }
 
+    /**
+     * Formatea la fecha en un formato legible.
+     *
+     * @param date la fecha en formato de cadena
+     * @return la fecha formateada
+     */
     private String formatDate(String date) {
         SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
         SimpleDateFormat targetFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
@@ -140,12 +149,14 @@ public class MatchesPlayedAdapter extends RecyclerView.Adapter<MatchesPlayedAdap
         }
     }
 
-
     @Override
     public int getItemCount() {
         return matchesPlayedList.size();
     }
 
+    /**
+     * ViewHolder para los elementos de la lista de partidos jugados.
+     */
     public static class MatchPlayedViewHolder extends RecyclerView.ViewHolder {
         TextView matchTextView, dateTextView, locationTextView, numericResultTextView, resultTextView;
         Button profileButton;

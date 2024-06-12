@@ -12,8 +12,7 @@ import ncolrod.socialfutv3.api.requests.PlayerStatsUpdateRequest;
 import ncolrod.socialfutv3.api.requests.RegisterRequest;
 import ncolrod.socialfutv3.api.requests.TeamJoinRequest;
 import ncolrod.socialfutv3.api.requests.TeamRegisterRequest;
-import ncolrod.socialfutv3.api.requests.UpdateRoleRequest;
-import ncolrod.socialfutv3.api.responses.AuthenticationRespose;
+import ncolrod.socialfutv3.api.responses.AuthenticationResponse;
 import ncolrod.socialfutv3.api.responses.CreateMatchResponse;
 import ncolrod.socialfutv3.api.responses.GenericResponse;
 import ncolrod.socialfutv3.api.responses.JoinMatchResponse;
@@ -29,6 +28,9 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+/**
+ * Interface que define los métodos para interactuar con el backend usando Retrofit.
+ */
 public interface RetrofitRepository {
 
     /*
@@ -37,11 +39,11 @@ public interface RetrofitRepository {
 
     @POST("auth/login")
     @Headers("Content-Type: application/json")
-    Call<AuthenticationRespose> login(@Body AuthenticationRequest request);
+    Call<AuthenticationResponse> login(@Body AuthenticationRequest request);
 
     @POST("auth/register")
     @Headers("Content-Type: application/json")
-    Call<AuthenticationRespose> register(@Body RegisterRequest request);
+    Call<AuthenticationResponse> register(@Body RegisterRequest request);
 
     //Peticion que devuelve un objeto User
     @GET("users/getuser")

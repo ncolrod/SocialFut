@@ -10,6 +10,9 @@ import java.util.List;
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.User;
 
+/**
+ * Adaptador para mostrar las estadísticas de los jugadores en un RecyclerView.
+ */
 public class ShowPlayerStatsAdapter extends RecyclerView.Adapter<ShowPlayerStatsAdapter.PlayerViewHolder> {
 
     private List<User> players;
@@ -28,6 +31,8 @@ public class ShowPlayerStatsAdapter extends RecyclerView.Adapter<ShowPlayerStats
     @Override
     public void onBindViewHolder(@NonNull PlayerViewHolder holder, int position) {
         User player = players.get(position);
+
+        // Configurar los valores de los campos del jugador
         holder.playerNameTextView.setText(player.getFirstname() + " " + player.getLastname());
         holder.positionTextView.setText("Position: " + player.getPosition());
         holder.goalsTextView.setText("Goals: " + player.getGoals());
@@ -40,6 +45,9 @@ public class ShowPlayerStatsAdapter extends RecyclerView.Adapter<ShowPlayerStats
         return players.size();
     }
 
+    /**
+     * ViewHolder para los elementos de la lista de estadísticas de jugadores.
+     */
     public static class PlayerViewHolder extends RecyclerView.ViewHolder {
         TextView playerNameTextView, positionTextView, goalsTextView, assistsTextView, matchesTextView;
 

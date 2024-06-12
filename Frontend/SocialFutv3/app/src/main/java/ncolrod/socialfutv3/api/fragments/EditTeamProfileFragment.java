@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,24 +22,30 @@ import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.Role;
 import ncolrod.socialfutv3.api.models.Team;
 import ncolrod.socialfutv3.api.models.User;
-import ncolrod.socialfutv3.api.requests.UpdateRoleRequest;
 import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
 import ncolrod.socialfutv3.api.tasks.LoadPlayersTask;
-import ncolrod.socialfutv3.api.tasks.UpdateTeamTask;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Fragmento para editar el perfil del equipo.
+ */
 public class EditTeamProfileFragment extends Fragment {
+
     private EditText nameEditText, locationEditText, stadiumEditText, descriptionEditText, teamColorEditText;
     private Button saveButton, editCaptainsButton;
     private SharedViewModel sharedViewModel;
     private RetrofitRepository retrofitRepository;
-
     private User selectedCaptain;
 
-
+    /**
+     * Crea una nueva instancia del fragmento con los detalles del equipo.
+     *
+     * @param team El equipo a editar.
+     * @return Una nueva instancia de EditTeamProfileFragment.
+     */
     public static EditTeamProfileFragment newInstance(Team team) {
         EditTeamProfileFragment fragment = new EditTeamProfileFragment();
         Bundle args = new Bundle();
@@ -97,12 +102,12 @@ public class EditTeamProfileFragment extends Fragment {
             updateTeamProfile(team);
         });
 
-        editCaptainsButton.setOnClickListener(v -> {
-            showEditCaptainsDialog();
-        });
-
+        editCaptainsButton.setOnClickListener(v -> showEditCaptainsDialog());
     }
 
+    /**
+     * Muestra un cuadro de diálogo para seleccionar el capitán del equipo.
+     */
     private void showEditCaptainsDialog() {
         new LoadPlayersTask(sharedViewModel, retrofitRepository).execute();
         sharedViewModel.getPlayersLiveData().observe(getViewLifecycleOwner(), players -> {
@@ -112,12 +117,12 @@ public class EditTeamProfileFragment extends Fragment {
             CharSequence[] playerNamesArray = playerNames.toArray(new CharSequence[0]);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            builder.setTitle("Seleccionar Capitán");
+            builder.setTitle("Select Captain");
             builder.setSingleChoiceItems(playerNamesArray, -1, (dialogInterface, i) -> {
                 // Guarda la selección
                 selectedCaptain = players.get(i);
             });
-            builder.setPositiveButton("Promover a Capitán", (dialog, which) -> {
+            builder.setPositiveButton("Promote to Captain", (dialog, which) -> {
                 if (selectedCaptain != null) {
                     updateRole(selectedCaptain, "ADMIN");
                 }
@@ -127,52 +132,57 @@ public class EditTeamProfileFragment extends Fragment {
                     updateRole(selectedCaptain, "USER");
                 }
             });
-            builder.setNeutralButton("Cancelar", (dialog, which) -> dialog.dismiss());
+            builder.setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss());
             builder.show();
         });
     }
 
-
-
+    /**
+     * Actualiza el rol de un usuario.
+     *
+     * @param user El usuario a actualizar.
+     * @param role El nuevo rol del usuario.
+     */
     private void updateRole(User user, String role) {
-        Log.i(":::UpdateRole:::", "Updating role for user ID: " + user.getId() + " to " + role);
+        Log.i(":::UpdateRole:::", "Función de actualización para ID de usuario:" + user.getId() + " a " + role);
         retrofitRepository.updateRole(user.getId(), role).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Rol actualizado correctamente a " + role, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Role successfully updated to " + role, Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.e(":::UpdateRole:::", "Failed to update role: " + response.code());
+                    Log.e(":::UpdateRole:::", "No se pudo actualizar la función:" + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.e(":::UpdateRole:::", "Network error while updating role", t);
+                Log.e(":::UpdateRole:::", "Error de red al actualizar el rol", t);
             }
         });
     }
 
-
-
-
-
+    /**
+     * Actualiza el perfil del equipo.
+     *
+     * @param updatedTeam El equipo actualizado.
+     */
     private void updateTeamProfile(Team updatedTeam) {
         Call<Team> call = retrofitRepository.updateTeam(updatedTeam);
         call.enqueue(new Callback<Team>() {
             @Override
             public void onResponse(Call<Team> call, Response<Team> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Equipo actualizado exitosamente", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Team successfully updated", Toast.LENGTH_SHORT).show();
                     requireActivity().getSupportFragmentManager().popBackStack();
                 } else {
-                    Toast.makeText(getContext(), "Error al actualizar equipo: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error updating team: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Team> call, Throwable t) {
-                Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error en la red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Representa la respuesta al intentar unirse a un equipo.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -15,6 +18,8 @@ import lombok.Setter;
 @Setter
 public class TeamJoinResponse {
 
-    private boolean succesfull;
-
+    /**
+     * Indica si la operación de unirse al equipo fue exitosa.
+     */
+    private boolean successful;
 }

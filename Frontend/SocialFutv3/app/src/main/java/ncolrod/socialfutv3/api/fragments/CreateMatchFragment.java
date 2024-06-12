@@ -20,7 +20,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.List;
 
 import ncolrod.socialfutv3.R;
 import ncolrod.socialfutv3.api.models.Role;
@@ -32,12 +31,14 @@ import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
 import ncolrod.socialfutv3.api.tasks.LoadMatchesDataTask;
 import ncolrod.socialfutv3.api.tasks.LoadMatchesPlayedTask;
-import ncolrod.socialfutv3.api.tasks.LoadTeamDataTask;
 import ncolrod.socialfutv3.api.tasks.LoadUserDataTask;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Fragmento para crear un nuevo partido.
+ */
 public class CreateMatchFragment extends Fragment {
     private EditText locationEditText;
     private TimePicker timePicker;
@@ -69,9 +70,12 @@ public class CreateMatchFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Muestra el selector de fecha.
+     */
     private void showDatePicker() {
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-        builder.setTitleText("Seleccionar Fecha");
+        builder.setTitleText("Select date");
         CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
         builder.setCalendarConstraints(constraintsBuilder.build());
 
@@ -86,6 +90,9 @@ public class CreateMatchFragment extends Fragment {
         });
     }
 
+    /**
+     * Crea un nuevo partido con los datos proporcionados.
+     */
     private void createMatch() {
         String location = locationEditText.getText().toString();
         int hour = timePicker.getCurrentHour();
@@ -101,18 +108,21 @@ public class CreateMatchFragment extends Fragment {
         Team homeTeam = sharedViewModel.getTeamLiveData().getValue();
         User creatorUser = sharedViewModel.getUserLiveData().getValue();
 
+        // Verificamos los permisos del usuario
         if (creatorUser.getRole() != Role.ADMIN) {
-            Toast.makeText(getContext(), "No tienes permisos para crear el partido", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "You don´t have permissions to create the match", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Verificamos la disponibilidad del equipo
         if (homeTeam.isAvailable()) {
-            Toast.makeText(getContext(), "El equipo no puede crear un partido porque ya ha creado uno", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "The team cannot create a match because it has already created one", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Verificamos que los campos no estén vacíos
         if (selectedDate == null || location.isEmpty()) {
-            Toast.makeText(getContext(), "Por favor, introduce todos los campos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please enter all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -122,32 +132,29 @@ public class CreateMatchFragment extends Fragment {
         calendar.set(Calendar.MINUTE, minute);
         Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
-
+        // Verificamos que el equipo y el usuario estén cargados
         if (homeTeam == null || creatorUser == null) {
             Toast.makeText(getContext(), "Error: User or team not loaded", Toast.LENGTH_SHORT).show();
             return;
         }
 
-
-
-
-
+        // Creamos la solicitud de creación de partido
         CreateMatchRequest createMatchRequest = new CreateMatchRequest(homeTeam, location, creatorUser, timestamp, price);
         Call<CreateMatchResponse> call = BackendComunication.getRetrofitRepository().createMatch(createMatchRequest);
 
+        // Enviamos la solicitud al backend
         call.enqueue(new Callback<CreateMatchResponse>() {
             @Override
             public void onResponse(Call<CreateMatchResponse> call, Response<CreateMatchResponse> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Match created successfully", Toast.LENGTH_SHORT).show();
-                    Log.i("CreateMatchFragment", "Match created successfully: " + response.body().toString());                    new LoadMatchesDataTask(sharedViewModel, retrofitRepository).execute();
+                    Toast.makeText(getContext(), "Successfully created match", Toast.LENGTH_SHORT).show();
+                    Log.i("CreateMatchFragment", "Successfully created match:" + response.body().toString());
+                    new LoadMatchesDataTask(sharedViewModel, retrofitRepository).execute();
                     new LoadMatchesPlayedTask(sharedViewModel, retrofitRepository).execute();
-                    new LoadMatchesDataTask(sharedViewModel,retrofitRepository).execute();
-
-
+                    new LoadMatchesDataTask(sharedViewModel, retrofitRepository).execute();
                 } else {
-                    Toast.makeText(getContext(), "Failed to create match", Toast.LENGTH_SHORT).show();
-                    Log.e("CreateMatchFragment", "Failed to create match: " + response.code());
+                    Toast.makeText(getContext(), "Could not create match", Toast.LENGTH_SHORT).show();
+                    Log.e("CreateMatchFragment", "Could not create match: " + response.code());
                 }
             }
 

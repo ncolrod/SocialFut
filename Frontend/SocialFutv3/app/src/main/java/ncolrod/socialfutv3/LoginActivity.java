@@ -16,75 +16,87 @@ import java.io.IOException;
 
 import ncolrod.socialfutv3.api.fragments.SuccesfullActivity;
 import ncolrod.socialfutv3.api.requests.AuthenticationRequest;
-import ncolrod.socialfutv3.api.responses.AuthenticationRespose;
+import ncolrod.socialfutv3.api.responses.AuthenticationResponse;
 import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import ncolrod.socialfutv3.api.retrofit.TokenHolder;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * Actividad para manejar el inicio de sesión del usuario.
+ */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText editTextEmail, editTextPassword;
     private Button btnRegister;
 
-
+    /**
+     * Método que se llama cuando se crea la actividad.
+     *
+     * @param savedInstanceState Si la actividad se vuelve a crear, este Bundle contiene los datos más recientes suministrados en onSaveInstanceState.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        //Vinculacion de los elementos con el layout
+        // Vinculación de los elementos con el layout
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
 
-        //Creamos y vinculamos los botones de login y sing up
+        // Crear y vincular los botones de login y registro
         Button btnLogin = findViewById(R.id.buttonLogin);
         btnRegister = findViewById(R.id.buttonRegister);
         btnRegister.setOnClickListener(this);
 
-        //Listener del boton de Iniciar Sesion
+        // Listener del botón de Iniciar Sesión
         btnLogin.setOnClickListener(v -> {
-            if (editTextEmail.getText() != null && editTextPassword.getText() != null){
-                //Recogemos las credenciales de sus respectivos editText
+            if (editTextEmail.getText() != null && editTextPassword.getText() != null) {
+                // Recoger las credenciales de sus respectivos EditText
                 String userEmail = editTextEmail.getText().toString();
                 String userPassword = editTextPassword.getText().toString();
 
-                //Mediante una tarea asincrona compruebo si el usuario existe y sus credenciales son correctas y cargo la siguiente pantalla
+                // Mediante una tarea asíncrona comprobar si el usuario existe y sus credenciales son correctas y cargar la siguiente pantalla
                 new VerifyUserTask(this, userEmail, userPassword).execute();
             } else {
-                //Mostramos un mensaje de error en caso de que los campos esten vacios
-                Toast.makeText(this, "Error: Debes de rellenar los campos", Toast.LENGTH_SHORT).show();
+                // Mostrar un mensaje de error en caso de que los campos estén vacíos
+                Toast.makeText(this, "Error: Debes rellenar los campos", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnRegister.setOnClickListener(v -> {
-            Intent intent =  new Intent(LoginActivity.this, RegisterActivity.class);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
             finish();
         });
 
     }
 
-
     @Override
     public void onClick(View v) {
-
-        if (v.getId() == btnRegister.getId()){
-            Intent intent =  new Intent(LoginActivity.this, RegisterActivity.class);
+        if (v.getId() == btnRegister.getId()) {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
             finish();
         }
-
     }
 
-
-
-    public class VerifyUserTask extends AsyncTask<Void, Void, AuthenticationRespose> {
+    /**
+     * Clase AsyncTask para verificar las credenciales del usuario en segundo plano.
+     */
+    public class VerifyUserTask extends AsyncTask<Void, Void, AuthenticationResponse> {
 
         private final String userEmail;
         private final String userPassword;
         private final Context appContext;
 
+        /**
+         * Constructor para inicializar el contexto de la aplicación y las credenciales del usuario.
+         *
+         * @param appContext  el contexto de la aplicación.
+         * @param userEmail   el correo electrónico del usuario.
+         * @param userPassword la contraseña del usuario.
+         */
         public VerifyUserTask(Context appContext, String userEmail, String userPassword) {
             super();
             this.appContext = appContext;
@@ -92,47 +104,55 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             this.userPassword = userPassword;
         }
 
-
+        /**
+         * Realiza la tarea en segundo plano para verificar las credenciales del usuario.
+         *
+         * @param voids sin parámetros.
+         * @return un objeto AuthenticationResponse o null en caso de error.
+         */
         @Override
-        protected AuthenticationRespose doInBackground(Void... voids) {
-            //Inicializar el BackendComunication que se usuara para verificar el usuario
-            Call<AuthenticationRespose> authenticationCall = BackendComunication.getRetrofitRepository().login(new AuthenticationRequest(userEmail, userPassword));
+        protected AuthenticationResponse doInBackground(Void... voids) {
+            // Inicializar el BackendComunication que se usará para verificar el usuario
+            Call<AuthenticationResponse> authenticationCall = BackendComunication.getRetrofitRepository().login(new AuthenticationRequest(userEmail, userPassword));
             try {
-                //Cuardamos la respuesta a nuestra peticion
-                Response<AuthenticationRespose> authenticationResponse= authenticationCall.execute();
-                //Control de errores
-                if (authenticationResponse.isSuccessful()){
-                    //Recojo la respuesta
-                    Log.e("LoginTask", "Exito en la ejecucion de authenticationResponse el codigo de respuesta es: "+authenticationResponse.code());
+                // Guardar la respuesta a nuestra petición
+                Response<AuthenticationResponse> authenticationResponse = authenticationCall.execute();
+                // Control de errores
+                if (authenticationResponse.isSuccessful()) {
+                    // Recoger la respuesta
+                    Log.e("LoginTask", "Éxito en la ejecución de authenticationResponse, el código de respuesta es: " + authenticationResponse.code());
                     return authenticationResponse.body();
                 } else {
-                    Log.e("LoginTask", "Error en la ejecucion de authenticationResponse el codigo de respuesta es: "+authenticationResponse.code());
+                    Log.e("LoginTask", "Error en la ejecución de authenticationResponse, el código de respuesta es: " + authenticationResponse.code());
                     return null;
                 }
             } catch (IOException e) {
-                Log.e("LoginTask", "Error en la ejecucion de authenticationCall", e);
+                Log.e("LoginTask", "Error en la ejecución de authenticationCall", e);
                 return null;
             }
-
         }
 
+        /**
+         * Se ejecuta después de que la tarea en segundo plano haya terminado.
+         *
+         * @param authenticationResponse la respuesta de autenticación obtenida.
+         */
         @Override
-        protected void onPostExecute(AuthenticationRespose authenticationRespose){
-            //Comprobamos la respuesta no sea nula, control de errores
-            if (authenticationRespose != null){
-                //Creamos un bundle con la informacion del usuario
+        protected void onPostExecute(AuthenticationResponse authenticationResponse) {
+            // Comprobar que la respuesta no sea nula, control de errores
+            if (authenticationResponse != null) {
+                // Crear un bundle con la información del usuario
                 Bundle infoBundle = new Bundle();
+                infoBundle.putString("userToken", authenticationResponse.getToken()); // Guardar el token del usuario en el bundle
 
-                infoBundle.putString("userToken", authenticationRespose.getToken()); //Guardamos el token del user en el bundle
+                TokenHolder.getInstance().setToken(authenticationResponse.getToken());
 
-                TokenHolder.getInstance().setToken(authenticationRespose.getToken());
-
-                //Iniciamos la app
-                Intent intent =  new Intent(getApplicationContext(), SuccesfullActivity.class);
+                // Iniciar la aplicación
+                Intent intent = new Intent(getApplicationContext(), SuccesfullActivity.class);
                 intent.putExtras(infoBundle);
                 startActivity(intent);
 
-            }else{
+            } else {
                 // Mostrar un mensaje de error en caso de que las credenciales sean incorrectas
                 Toast.makeText(this.appContext, "Error: Credenciales incorrectas", Toast.LENGTH_SHORT).show();
             }

@@ -37,6 +37,9 @@ import ncolrod.socialfutv3.api.tasks.LoadTeamDataTask;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * Fragmento para buscar y unirse a partidos.
+ */
 public class SearchMatchesFragment extends Fragment {
     private RecyclerView matchesRecyclerView;
     private MatchesAdapter matchesAdapter;
@@ -56,10 +59,12 @@ public class SearchMatchesFragment extends Fragment {
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         retrofitRepository = BackendComunication.getRetrofitRepository();
 
+        // Cargar jugadores, datos de partidos y equipo
         new LoadPlayersTask(sharedViewModel, retrofitRepository).execute();
         new LoadMatchesDataTask(sharedViewModel, retrofitRepository).execute();
         new LoadTeamDataTask(sharedViewModel, retrofitRepository).execute();
 
+        // Observar cambios en la lista de partidos y actualizar el adaptador
         sharedViewModel.getMatchesLiveData().observe(getViewLifecycleOwner(), matches -> {
             if (matches != null) {
                 matchesList = matches;
@@ -68,6 +73,7 @@ public class SearchMatchesFragment extends Fragment {
                 matchesAdapter = new MatchesAdapter(getContext(), matchesList, currentTeam, currentUser);
                 matchesRecyclerView.setAdapter(matchesAdapter);
 
+                // Configurar el listener de clics para los elementos del adaptador
                 matchesAdapter.setOnItemClickListener(new MatchesAdapter.OnItemClickListener() {
                     @Override
                     public void onCardClick(int position) {
@@ -79,20 +85,18 @@ public class SearchMatchesFragment extends Fragment {
                         if (currentUser.getRole() != Role.ADMIN) {
                             new AlertDialog.Builder(getContext())
                                     .setTitle("Error")
-                                    .setMessage("Solo los administradores pueden unirse a los partidos.")
+                                    .setMessage("Only administrators can join to matches.")
                                     .setPositiveButton("OK", null)
                                     .show();
-                            return;
-                        } else if (currentTeam.isAvailable() == true) {
+                        } else if (currentTeam.isAvailable()) {
                             new AlertDialog.Builder(getContext())
                                     .setTitle("Error")
-                                    .setMessage("Tu equipo ya esta en un partido.")
+                                    .setMessage("Your team is already in a match.")
                                     .setPositiveButton("OK", null)
                                     .show();
-                            return;
                         } else {
                             new AlertDialog.Builder(getContext())
-                                    .setTitle("Seguro que quieres unirte?")
+                                    .setTitle("Are you sure you want to join?")
                                     .setView(new EditText(getContext()))
                                     .setPositiveButton("Si", (dialog, whichButton) -> new JoinMatchTask(position, currentTeam).execute())
                                     .setNegativeButton("No", null)
@@ -100,15 +104,13 @@ public class SearchMatchesFragment extends Fragment {
                         }
                     }
 
-
                     @Override
                     public void onCancelButtonClick(int position) {
                         if (currentUser.getRole() == Role.ADMIN) {
                             new CancelMatchTask(position, matchesList.get(position).getId()).execute();
                         } else {
-                            Toast.makeText(getContext(), "No tienes permisos para cancelar un partido. Solo los capitanes", Toast.LENGTH_SHORT);
+                            Toast.makeText(getContext(), "You do not have permission to cancel a match. Only the captains.", Toast.LENGTH_SHORT).show();
                         }
-
                     }
 
                     @Override
@@ -116,7 +118,7 @@ public class SearchMatchesFragment extends Fragment {
                         Match match = matchesList.get(position);
                         Team awayTeam = match.getAwayTeam();
                         if (awayTeam == null) {
-                            Toast.makeText(getContext(), "No tienes permisos, únete primero", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "You don't have permissions, join first.", Toast.LENGTH_SHORT).show();
                         } else {
                             MatchDetailFragment matchDetailsFragment = MatchDetailFragment.newInstance(matchesList.get(position).getId());
                             getParentFragmentManager().beginTransaction()
@@ -134,10 +136,9 @@ public class SearchMatchesFragment extends Fragment {
                                     for (Match match : matches) {
                                         // Verificar que el equipo no sea nulo antes de intentar acceder a él
                                         if (match.getHomeTeam() != null && match.getHomeTeam().getName() != null) {
-                                            // Usar el nombre del equipo
-                                            Log.d("MyMatchFragment", "Home Team: " + match.getHomeTeam().getName());
+                                            Log.d(":::MyMatchFragment:::", "Equipo local " + match.getHomeTeam().getName());
                                         } else {
-                                            Log.d("MyMatchFragment", "Home Team is null");
+                                            Log.d(":::MyMatchFragment:::", "El equipo local es nulo");
                                         }
                                     }
                                 }
@@ -151,7 +152,7 @@ public class SearchMatchesFragment extends Fragment {
                                     .commit();
                         } else {
                             new AlertDialog.Builder(getContext())
-                                    .setTitle("No tienes permisos para editar el partido")
+                                    .setTitle("You do not have permissions to edit the match.")
                                     .setNegativeButton("Ok", null)
                                     .show();
                         }
@@ -161,13 +162,13 @@ public class SearchMatchesFragment extends Fragment {
                     public void onDeleteButtonClick(int position) {
                         if (currentUser.getId() == matchesList.get(position).getCreatorUser().getId()) {
                             new AlertDialog.Builder(getContext())
-                                    .setTitle("Eliminar Partido")
-                                    .setMessage("¿Estás seguro de que quieres eliminar este partido?")
-                                    .setPositiveButton("Si", (dialog, whichButton) -> new DeleteMatchTask(position, matchesList.get(position).getId()).execute())
+                                    .setTitle("Delete Match")
+                                    .setMessage("Are you sure you want to delete this match?")
+                                    .setPositiveButton("Yes", (dialog, whichButton) -> new DeleteMatchTask(position, matchesList.get(position).getId()).execute())
                                     .setNegativeButton("No", null)
                                     .show();
                         } else {
-                            Toast.makeText(getContext(), "No tienes permisos para borrar un partido. Solo el creador puede borrarlo", Toast.LENGTH_SHORT);
+                            Toast.makeText(getContext(), "You do not have permissions to delete a match. Only the creator can delete it.", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -175,7 +176,6 @@ public class SearchMatchesFragment extends Fragment {
                     public void onProfileButtonClick(int position) {
                         showTeamInfoDialog(matchesList.get(position));
                     }
-
                 });
             }
         });
@@ -183,25 +183,24 @@ public class SearchMatchesFragment extends Fragment {
         return view;
     }
 
-
     private void showTeamInfoDialog(Match match) {
         Team homeTeam = match.getHomeTeam();
-        String teamInfo = (homeTeam != null ? homeTeam.getName() : "Desconocido") + "\n" +
-                "Partidos ganados: " + (homeTeam != null ? homeTeam.getMatchesWon() : "Desconocido") + "\n" +
-                "Partidos perdidos: " + (homeTeam != null ? homeTeam.getLostMatches() : "Desconocido") + "\n" +
-                "Partidos empatados: " + (homeTeam != null ? homeTeam.getTiedMatches() : "Desconocido");
+        String teamInfo = (homeTeam != null ? homeTeam.getName() : "Unknown") + "\n" +
+                "Matches won: " + (homeTeam != null ? homeTeam.getMatchesWon() : "Unknown") + "\n" +
+                "Lost matches: " + (homeTeam != null ? homeTeam.getLostMatches() : "Unknown") + "\n" +
+                "Tied matches: " + (homeTeam != null ? homeTeam.getTiedMatches() : "Unknown");
 
         new AlertDialog.Builder(getContext())
-                .setTitle("Información del Equipo")
+                .setTitle("Team Information")
                 .setMessage(teamInfo)
-                .setPositiveButton("Ver Jugadores", (dialog, which) -> {
+                .setPositiveButton("See Players", (dialog, which) -> {
                     PlayersFragment playersFragment = PlayersFragment.newInstance(match.getId());
                     getParentFragmentManager().beginTransaction()
                             .replace(R.id.frame_layout, playersFragment)
                             .addToBackStack(null)
                             .commit();
                 })
-                .setNeutralButton("Cerrar", null)
+                .setNeutralButton("Close", null)
                 .show();
     }
 
@@ -233,14 +232,14 @@ public class SearchMatchesFragment extends Fragment {
         protected void onPostExecute(Boolean success) {
             if (success) {
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Éxito")
-                        .setMessage("Te has unido al partido exitosamente.")
+                        .setTitle("Success")
+                        .setMessage("You have successfully joined the match.")
                         .setPositiveButton("OK", null)
                         .show();
             } else {
                 new AlertDialog.Builder(getContext())
                         .setTitle("Error")
-                        .setMessage("No se pudo unir al partido. Inténtalo de nuevo.")
+                        .setMessage("He couldn't join the party. Try again.")
                         .setPositiveButton("OK", null)
                         .show();
             }
@@ -306,7 +305,7 @@ public class SearchMatchesFragment extends Fragment {
                 Call<GenericResponse> call = retrofitRepository.deleteMatch(matchId);
                 Response<GenericResponse> response = call.execute();
                 if (response.isSuccessful()) {
-                    Log.i(":::TaskDeleteMatch:::", "Borrado con exito");
+                    Log.i(":::TaskDeleteMatch:::", "Borrado con éxito");
                     return true;
                 } else {
                     Log.i(":::TaskDeleteMatch:::", "Error: " + response.code());
@@ -321,27 +320,26 @@ public class SearchMatchesFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                Log.i(":::TaskDeleteMatch:::", "Borrado con exito");
+                Log.i(":::TaskDeleteMatch:::", "Borrado con éxito");
                 matchesList.get(position).getHomeTeam().setAvailable(false);
-                if (matchesList.get(position).getAwayTeam()!=null){
+                if (matchesList.get(position).getAwayTeam() != null) {
                     matchesList.get(position).getAwayTeam().setAvailable(false);
                 }
                 matchesList.remove(position);
                 matchesAdapter.notifyItemRemoved(position);
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Éxito")
-                        .setMessage("Partido eliminado exitosamente.")
+                        .setTitle("Success")
+                        .setMessage("Match successfully eliminated.")
                         .setPositiveButton("OK", null)
                         .show();
             } else {
                 Log.i(":::TaskDeleteMatch:::", "Error al borrar partido: ");
                 new AlertDialog.Builder(getContext())
                         .setTitle("Error")
-                        .setMessage("No se pudo eliminar el partido. Inténtalo de nuevo.")
+                        .setMessage("The match could not be eliminated. Try again.")
                         .setPositiveButton("OK", null)
                         .show();
             }
         }
     }
-
 }

@@ -13,17 +13,31 @@ import ncolrod.socialfutv3.api.retrofit.BackendComunication;
 import ncolrod.socialfutv3.api.retrofit.RetrofitRepository;
 import retrofit2.Call;
 
+/**
+ * Clase AsyncTask para cargar los datos del equipo en segundo plano y actualizar el SharedViewModel.
+ */
 public class LoadTeamDataTask extends AsyncTask<Void, Void, Team> {
 
     private final SharedViewModel sharedViewModel;
     private final RetrofitRepository retrofitRepository;
 
+    /**
+     * Constructor para inicializar el ViewModel compartido y el repositorio de Retrofit.
+     *
+     * @param sharedViewModel el ViewModel compartido para actualizar los datos.
+     * @param retrofitRepository el repositorio de Retrofit para realizar las peticiones.
+     */
     public LoadTeamDataTask(SharedViewModel sharedViewModel, RetrofitRepository retrofitRepository) {
         this.sharedViewModel = sharedViewModel;
         this.retrofitRepository = retrofitRepository;
     }
 
-
+    /**
+     * Realiza la tarea en segundo plano para cargar los datos del equipo.
+     *
+     * @param voids sin parámetros.
+     * @return un objeto Team o null en caso de error.
+     */
     @Override
     protected Team doInBackground(Void... voids) {
         try {
@@ -42,10 +56,19 @@ public class LoadTeamDataTask extends AsyncTask<Void, Void, Team> {
         }
     }
 
+    /**
+     * Se ejecuta después de que la tarea en segundo plano haya terminado.
+     *
+     * @param team el objeto Team cargado.
+     */
     @Override
     protected void onPostExecute(Team team) {
         super.onPostExecute(team);
-        sharedViewModel.setTeam(team);
-        //Log.i(":::LoadTeamTask:::", "Loaded team " + team.getName() + " | " + team.getLocation() + " | "+ team.getStadium());
+        if (team != null) {
+            sharedViewModel.setTeam(team);
+            Log.i(":::LoadTeamTask:::", "Loaded team " + team.getName() + " | " + team.getLocation() + " | " + team.getStadium());
+        } else {
+            Log.e(":::LoadTeamTask:::", "Failed to load team");
+        }
     }
 }

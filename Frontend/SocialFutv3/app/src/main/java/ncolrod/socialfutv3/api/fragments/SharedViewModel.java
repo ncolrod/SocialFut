@@ -7,11 +7,14 @@ import androidx.lifecycle.ViewModel;
 import java.util.List;
 
 import lombok.Getter;
-import ncolrod.socialfutv3.api.models.Goal;
 import ncolrod.socialfutv3.api.models.Match;
 import ncolrod.socialfutv3.api.models.Team;
 import ncolrod.socialfutv3.api.models.User;
 
+/**
+ * Este SharedViewModel permite a las diferentes partes de la aplicación compartir y observar los mismos datos,
+ * garantizando que los cambios se reflejen automáticamente en todas las vistas que estén observando estos datos.
+ */
 @Getter
 public class SharedViewModel extends ViewModel {
 
@@ -19,12 +22,12 @@ public class SharedViewModel extends ViewModel {
     private MutableLiveData<Team> team = new MutableLiveData<>(); // Equipo del usuario actual
     private MutableLiveData<List<Match>> matches = new MutableLiveData<>(); // Partidos disponibles
     private MutableLiveData<List<Match>> matchesPlayed = new MutableLiveData<>(); // Partidos jugados
-    private MutableLiveData<List<Goal>> userStatistics = new MutableLiveData<>(); // Estadísticas del usuario
     private MutableLiveData<List<User>> players = new MutableLiveData<>(); // Jugadores del equipo
     private MutableLiveData<List<User>> homeTeamPlayers = new MutableLiveData<>(); // Jugadores del equipo local
     private MutableLiveData<List<User>> awayTeamPlayers = new MutableLiveData<>(); // Jugadores del equipo visitante
     private MutableLiveData<Match> joinedMatch = new MutableLiveData<>(); // Partido al que se ha unido el usuario
 
+    // Métodos para actualizar los LiveData
     public void setUser(User user) {
         this.user.setValue(user);
     }
@@ -37,14 +40,8 @@ public class SharedViewModel extends ViewModel {
         this.matches.setValue(matches);
     }
 
-    public void setMatchesPlayed(List<Match> matchesPlayed) {this.matchesPlayed.setValue(matchesPlayed);}
-
-    public MutableLiveData<List<Match>> getMatchesPlayed() {
-        return matchesPlayed;
-    }
-
-    public void setUserStatistics(List<Goal> userStatistics) {
-        this.userStatistics.setValue(userStatistics);
+    public void setMatchesPlayed(List<Match> matchesPlayed) {
+        this.matchesPlayed.setValue(matchesPlayed);
     }
 
     public void setPlayers(List<User> players) {
@@ -63,6 +60,7 @@ public class SharedViewModel extends ViewModel {
         this.joinedMatch.setValue(match);
     }
 
+    // Métodos para obtener los LiveData
     public LiveData<User> getUserLiveData() {
         return user;
     }
@@ -75,12 +73,8 @@ public class SharedViewModel extends ViewModel {
         return matches;
     }
 
-    public LiveData<List<Match>> getMatchesPlayedLiveData(){
+    public LiveData<List<Match>> getMatchesPlayedLiveData() {
         return matchesPlayed;
-    }
-
-    public LiveData<List<Goal>> getUserStatisticsLiveData() {
-        return userStatistics;
     }
 
     public LiveData<List<User>> getPlayersLiveData() {
@@ -106,7 +100,7 @@ public class SharedViewModel extends ViewModel {
         user = null;
         team = null;
         matches = null;
-        userStatistics = null;
+        matchesPlayed = null;
         players = null;
         homeTeamPlayers = null;
         awayTeamPlayers = null;

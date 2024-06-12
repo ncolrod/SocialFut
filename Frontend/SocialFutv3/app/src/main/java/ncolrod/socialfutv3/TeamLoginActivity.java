@@ -20,94 +20,118 @@ import ncolrod.socialfutv3.api.responses.TeamJoinResponse;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * Actividad para manejar la unión de un usuario a un equipo.
+ */
 public class TeamLoginActivity extends AppCompatActivity {
 
     private EditText editTextSafeCode;
     private Button btnJoin, btnCreateTeam;
 
+    /**
+     * Método que se llama cuando se crea la actividad.
+     *
+     * @param savedInstanceState Si la actividad se vuelve a crear, este Bundle contiene los datos más recientes suministrados en onSaveInstanceState.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_login);
 
-        //Vinculamos los elementos del layout
+        // Vinculamos los elementos del layout
         editTextSafeCode = findViewById(R.id.editTextSafeCode);
         btnJoin = findViewById(R.id.buttonJoin);
         btnCreateTeam = findViewById(R.id.buttonCreateTeam);
 
-        //Realizamos los listener de los botones
+        // Configuramos los listeners de los botones
         btnJoin.setOnClickListener(v -> {
-            if (editTextSafeCode.getText() !=  null){
-                //Recogemos credenciales para unirse al equipo
+            if (editTextSafeCode.getText() != null) {
+                // Recogemos credenciales para unirse al equipo
                 String safeCode = editTextSafeCode.getText().toString();
 
-                //Comprobamos con una tarea asincrona si el equipo y sus respectivas credenciales son correctas
+                // Comprobamos con una tarea asincrona si el equipo y sus respectivas credenciales son correctas
                 new VerifyTeamTask(safeCode, this).execute();
             } else {
-                //Mostramos un mensaje de error en caso de que los campos esten vacios
+                // Mostramos un mensaje de error en caso de que los campos esten vacios
                 Toast.makeText(this, "Error: Debes de rellenar los campos", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnCreateTeam.setOnClickListener(v -> {
-            Intent intent =  new Intent(TeamLoginActivity.this, TeamRegisterActivity.class);
+            Intent intent = new Intent(TeamLoginActivity.this, TeamRegisterActivity.class);
             startActivity(intent);
             finish();
         });
-
     }
 
-    public class VerifyTeamTask extends AsyncTask<Void, Void, TeamJoinResponse>{
+    /**
+     * Clase AsyncTask para verificar la unión a un equipo en segundo plano.
+     */
+    public class VerifyTeamTask extends AsyncTask<Void, Void, TeamJoinResponse> {
         private final String safeCode;
         private final Context appContext;
 
+        /**
+         * Constructor para inicializar el contexto de la aplicación y el código seguro.
+         *
+         * @param safeCode  el código seguro del equipo.
+         * @param appContext el contexto de la aplicación.
+         */
         public VerifyTeamTask(String safeCode, Context appContext) {
             this.safeCode = safeCode;
             this.appContext = appContext;
         }
 
+        /**
+         * Realiza la tarea en segundo plano para verificar la unión al equipo.
+         *
+         * @param voids sin parámetros.
+         * @return un objeto TeamJoinResponse o null en caso de error.
+         */
         @Override
         protected TeamJoinResponse doInBackground(Void... voids) {
-            //Inicializar el BackendComunication que se usuara para verificar el usuario
+            // Inicializar el BackendComunication que se usará para verificar el usuario
             Call<TeamJoinResponse> teamJoinResponseCall = BackendComunication.getRetrofitRepository().join(new TeamJoinRequest(safeCode));
             try {
-                //Cuardamos la respuesta a nuestra peticion
-                Response<TeamJoinResponse> teamJoinResponse= teamJoinResponseCall.execute();
-                //Log.e("Response",teamJoinResponse.toString());
-                //Control de errores
-                if (teamJoinResponse.isSuccessful()){
-                    //Recojo la respuesta
-                    Log.e("TeamJoinTask", "Exito en la ejecucion de teamJoinResponseCall el codigo de respuesta es: "+teamJoinResponse.code());
+                // Guardar la respuesta a nuestra petición
+                Response<TeamJoinResponse> teamJoinResponse = teamJoinResponseCall.execute();
+                // Control de errores
+                if (teamJoinResponse.isSuccessful()) {
+                    // Recoger la respuesta
+                    Log.e("TeamJoinTask", "Éxito en la ejecución de teamJoinResponseCall, el código de respuesta es: " + teamJoinResponse.code());
                     return teamJoinResponse.body();
                 } else {
-                    Log.e("TeamJoinTask", "Error en la ejecucion de teamJoinResponseCall el codigo de respuesta es: "+teamJoinResponse.code());
+                    Log.e("TeamJoinTask", "Error en la ejecución de teamJoinResponseCall, el código de respuesta es: " + teamJoinResponse.code());
                     return null;
                 }
             } catch (IOException e) {
-                Log.e("TeamJoinTask", "Error en la ejecucion de teamJoinResponseCall", e);
+                Log.e("TeamJoinTask", "Error en la ejecución de teamJoinResponseCall", e);
                 return null;
             }
         }
 
+        /**
+         * Se ejecuta después de que la tarea en segundo plano haya terminado.
+         *
+         * @param teamJoinResponse la respuesta de unión al equipo obtenida.
+         */
         @Override
-        protected void onPostExecute(TeamJoinResponse teamJoinResponse){
-            //Comprobamos la respuesta no sea nula, control de errores
-            if (teamJoinResponse != null){
-                //Creamos un bundle para ver si es correcto
+        protected void onPostExecute(TeamJoinResponse teamJoinResponse) {
+            // Comprobamos la respuesta no sea nula, control de errores
+            if (teamJoinResponse != null) {
+                // Creamos un bundle para ver si es correcto
                 Bundle infoBundle = new Bundle();
-                infoBundle.putBoolean("team", teamJoinResponse.isSuccesfull());
+                infoBundle.putBoolean("team", teamJoinResponse.isSuccessful());
 
-                //Iniciamos la app
-                Intent intent =  new Intent(getApplicationContext(), SuccesfullActivity.class);
+                // Iniciamos la app
+                Intent intent = new Intent(getApplicationContext(), SuccesfullActivity.class);
                 intent.putExtras(infoBundle);
                 startActivity(intent);
 
-            }else{
+            } else {
                 // Mostrar un mensaje de error en caso de que las credenciales sean incorrectas
                 Toast.makeText(this.appContext, "Error: Equipo no encontrado", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
-
 }
