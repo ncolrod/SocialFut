@@ -23,7 +23,7 @@
         android:id="@+id/userName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Nombre del Usuario"
+        android:text="User name"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -38,7 +38,7 @@
         android:id="@+id/userLocation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Ciudad"
+        android:text="City"
         android:textSize="18sp"
         android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@id/profileImage"
@@ -52,7 +52,7 @@
         android:id="@+id/teamName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Nombre del Equipo"
+        android:text="Team Name"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -80,7 +80,7 @@
         android:id="@+id/textPlainStats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Estadísticas:"
+        android:text="Statistics:"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -124,7 +124,7 @@
                     android:id="@+id/statsGoals"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Goles: 0"
+                    android:text="Goals: 0"
                     android:textSize="18sp"/>
             </LinearLayout>
 
@@ -144,7 +144,7 @@
                     android:id="@+id/statsAssists"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Asistencias: 0"
+                    android:text="Assists: 0"
                     android:textSize="18sp"/>
             </LinearLayout>
 
@@ -163,7 +163,7 @@
                     android:id="@+id/statsMatches"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Partidos Jugados: 0"
+                    android:text="Matches Played: 0"
                     android:textSize="18sp"/>
             </LinearLayout>
         </LinearLayout>
@@ -173,7 +173,7 @@
         android:id="@+id/modifyProfileButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Modificar Perfil"
+        android:text="Modify Profile"
         app:layout_constraintTop_toBottomOf="@id/cardViewStats"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/deleteProfileButton"
@@ -184,7 +184,7 @@
         android:id="@+id/deleteProfileButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Borrar Perfil"
+        android:text="Delete Profile"
         app:layout_constraintTop_toBottomOf="@id/cardViewStats"
         app:layout_constraintStart_toEndOf="@id/modifyProfileButton"
         app:layout_constraintEnd_toEndOf="parent"

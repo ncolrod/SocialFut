@@ -42,7 +42,7 @@
                         android:id="@+id/locationEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Ubicación del partido"
+                        android:hint="Match Location"
                         android:inputType="text"
                         android:textStyle="bold"
                         android:textColor="@color/black"/>
@@ -51,7 +51,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Fecha del partido"
+                    android:text="Match date"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -61,7 +61,7 @@
                     android:id="@+id/datePickerButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Seleccionar Fecha"
+                    android:text="Select Date"
                     android:layout_marginBottom="16dp"
                     app:icon="@drawable/calendar"
                     app:iconTint="@color/white"
@@ -73,7 +73,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Hora del partido"
+                    android:text="Match time"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -100,7 +100,7 @@
                         android:id="@+id/priceEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Precio por persona"
+                        android:hint="Price per person"
                         android:inputType="numberDecimal"
                         android:textColor="@color/black"
                         android:textStyle="bold"/>
@@ -110,7 +110,7 @@
                     android:id="@+id/createMatchButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Crear Partido"
+                    android:text="Post Match"
                     android:backgroundTint="@color/black"
                     android:textColor="@color/white"
                     android:textStyle="bold"

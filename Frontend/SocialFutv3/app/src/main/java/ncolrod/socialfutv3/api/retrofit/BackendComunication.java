@@ -15,7 +15,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public class BackendComunication {
 
     // Base URL del servidor backend
-    private final String baseUrl = "http://192.168.1.134:8080/";
+    private final String baseUrl="http://192.168.1.134:8080/";
 
     // ObjectMapper para la conversión de JSON
     private final ObjectMapper objectMapper = new ObjectMapper();
