@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 new VerifyUserTask(this, userEmail, userPassword).execute();
             } else {
                 // Mostrar un mensaje de error en caso de que los campos estén vacíos
-                Toast.makeText(this, "Error: Debes rellenar los campos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error: You must fill out the fields", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -154,7 +154,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             } else {
                 // Mostrar un mensaje de error en caso de que las credenciales sean incorrectas
-                Toast.makeText(this.appContext, "Error: Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.appContext, "Error: Incorrect credentials", Toast.LENGTH_SHORT).show();
             }
         }
     }

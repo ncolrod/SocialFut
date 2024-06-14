@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new RegisterUserTask(this, userName, userLastName, telephone, location, userPosition, userEmail, userPassword).execute();
             } else {
                 // Mostrar un mensaje de error en caso de que los campos estén vacíos
-                Toast.makeText(this, "Error: Debes de rellenar los campos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error: You must fill out the fields", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -168,7 +168,7 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(intent);
             } else {
                 // Mostrar un mensaje de error en caso de que las credenciales sean incorrectas
-                Toast.makeText(this.appContext, "Error: Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.appContext, "Error: Incorrect credentials", Toast.LENGTH_SHORT).show();
             }
         }
     }
